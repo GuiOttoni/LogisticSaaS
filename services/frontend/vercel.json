@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "name": "omnidynamic-frontend",
+  "regions": ["gru1"],
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm ci",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "NEXT_PUBLIC_GATEWAY_URL": "@gateway_url"
+  }
+}

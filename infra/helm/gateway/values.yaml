@@ -1,0 +1,35 @@
+replicaCount: 2
+
+image:
+  repository: omnidynamic/gateway
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3001
+  targetPort: 3001
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+env:
+  GATEWAY_PORT: "3001"
+  # These are sourced from K8s Secrets
+  JWT_SECRET: ""
+  GATEWAY_SUPABASE_URL: ""
+  GATEWAY_SUPABASE_SERVICE_ROLE_KEY: ""
+  PRICING_SOLVER_GRPC_HOST: "omnidynamic-solver"
+  PRICING_SOLVER_GRPC_PORT: "50051"
+  ORDER_SERVICE_URL: "http://omnidynamic-orders:3004"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70

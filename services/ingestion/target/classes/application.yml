@@ -1,0 +1,16 @@
+server:
+  port: ${INGESTION_PORT:3002}
+
+spring:
+  application:
+    name: omnidynamic-ingestion
+
+kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  topic:
+    inventory: ${KAFKA_TOPIC_INVENTORY:inventory-events}
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    acks: all
+    retries: 3
