@@ -1,5 +1,25 @@
 # OmniDynamic Engine
 
+> Projeto de estudo feito utilizando Antigravity + Gemini 3 Pro
+>Tecnologias diversas para os microserviços, aplicações de diversos conceitos como:
+> Filas, gRPC, Akka.NET, BFF x Frontend, Observabilidade e etc.
+
+> Ainda em desenvolvimento. Faltando implementações como CQRS, Event Sourcing, Caching, Patterns diferentes e SAGA Pattern
+
+Checklist de implementação:
+- [ ] Fazer implementação de saida de estoque
+- [ ] Fazer implementação de entrada de estoque
+- [ ] Fazer implementação de reserva de estoque
+- [ ] Fazer implementação de cancelamento de reserva de estoque
+- [ ] Fazer implementação de alteração de reserva de estoque
+- [ ] Fazer implementação de alteração de preço
+- [ ] Fazer implementação de alteração de estoque
+- [ ] Fazer implementação de alteração de preço e estoque
+- [ ] Fazer implementação de alteração de preço e estoque e reserva de estoque
+- [ ] Fazer implementação de alteração de preço e estoque e reserva de estoque e cancelamento de reserva de estoque
+- [ ] Fazer implementação de alteração de preço e estoque e reserva de estoque e cancelamento de reserva de estoque e alteração de preço e estoque e reserva de estoque e cancelamento de reserva de estoque
+
+
 > Plataforma ultra-escalável de **precificação dinâmica** e **gestão de inventário** em tempo real para o varejo global.
 
 ## Stack

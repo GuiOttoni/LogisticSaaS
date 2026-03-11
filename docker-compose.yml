@@ -244,6 +244,15 @@ services:
     networks:
       - omnidynamic
 
+  docs-site:
+    build:
+      context: ./docs-site
+      dockerfile: Dockerfile
+    ports:
+      - "3007:80"
+    networks:
+      - omnidynamic
+
 networks:
   omnidynamic:
     driver: bridge
