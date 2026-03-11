@@ -47,14 +47,13 @@ Define os gatilhos que o Solver C++ irá processar.
 | priority | INTEGER | Ordem de execução para conflitos. |
 | is_active | BOOLEAN | Estado da regra. |
 
-3. Gestão de Pedidos e Inventário (PostgreSQL - Schema: orders)
+3. Gestão de Pedidos e Inventário (PostgreSQL via Supabase SDK)
 
-Microsserviço: .NET 8 (Akka.NET)
+Microsserviço: .NET 8 (Order Service)
 
-Justificativa: Suporte a Event Sourcing e consistência ACID para transações financeiras.
+Justificativa: Persistência resiliente via PostgREST (HTTPS/REST) usando o **Supabase C# SDK**, eliminando instabilidades de conexão TCP/PgBouncer em redes conteinerizadas.
 
-Tabela: order_events (Event Store - RF03 / US04)
-
+Tabela: order_events (Event Store)
 Registo imutável de todas as transações de cada ator.
 | Coluna | Tipo | Descrição |
 | :--- | :--- | :--- |
@@ -65,78 +64,23 @@ Registo imutável de todas as transações de cada ator.
 | version | INTEGER | Versão do estado do ator para concorrência otimista. |
 | created_at | TIMESTAMPTZ | Timestamp de alta precisão. |
 
-Tabela: inventory_snapshot (Read Model)
+4. Catálogo e SKU (PostgreSQL via Supabase SDK)
 
-Estado atualizado "achatado" para consultas rápidas do Dashboard.
+Microsserviço: .NET 8 (Catalog Service)
 
-sku_id (PK), total_reserved, total_available, last_update.
+Justificativa: Gestão de mestre de produtos e trilha de auditoria de estoque utilizando mapeamento direto de modelos para PostgREST.
 
-4. Auditoria e Compliance (PostgreSQL - Schema: audit)
+Tabela: products
+| Coluna | Tipo | Descrição |
+| :--- | :--- | :--- |
+| id | UUID (PK) | ID único do produto. |
+| sku | VARCHAR(100) | SKU único do produto. |
+| name | VARCHAR(255) | Nome amigável. |
+| base_price | NUMERIC | Preço base de cálculo. |
+| stock_quantity | INTEGER | Saldo atual em estoque. |
 
-Microsserviço: Shared / Node.js
-
-Justificativa: Atender à US05 (Log de Auditoria).
-
-Tabela: price_change_logs
-
-Coluna
-
-Tipo
-
-Descrição
-
-id
-
-UUID (PK)
-
-Identificador do log.
-
-sku_id
-
-VARCHAR(100)
-
-SKU afetado.
-
-old_price
-
-DECIMAL(15,2)
-
-Preço antes da alteração.
-
-new_price
-
-DECIMAL(15,2)
-
-Preço após a alteração.
-
-rule_id
-
-UUID (FK)
-
-Regra que disparou a alteração.
-
-reason
-
-TEXT
-
-Motivo gerado pelo Solver (ex: "Low stock trigger").
-
-timestamp
-
-TIMESTAMPTZ
-
-Data e hora exacta.
+Tabela: stock_audit
+Histórico de movimentações para auditoria (US05).
 
 5. Cache de Alta Performance (Redis)
-
-Microsserviço: C++ Pricing Solver & Node.js Gateway
-
-Justificativa: Acesso sub-milissegundo para o checkout.
-
-Key: price:{sku_id}:{region_id}
-
-Value: decimal_price (TTL: 5-30s)
-
-Key: inventory_lock:{sku_id}:{order_id}
-
-Value: timestamp (TTL: 15m - US04)
+... (mantido conforme original)

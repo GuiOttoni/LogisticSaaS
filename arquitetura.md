@@ -26,53 +26,24 @@ BFF & Gateway (Node.js): Orquestra a comunicação externa e segurança.
 
 3. Stack Tecnológica e Justificativa
 
-Componente
-
-Tecnologia
-
-Justificativa
-
-Ingestion
-
-Java 21 (Spring WebFlux)
-
-Modelo reativo para I/O não-bloqueante; alta resiliência para fluxos IoT massivos.
-
-API Gateway / BFF
-
-Node.js (NestJS)
-
-Desenvolvimento rápido de APIs; ecossistema rico para autenticação JWT e WebSockets.
-
-Pricing Solver
-
-C++ 20 (Drogon Framework)
-
-Latência crítica; controle total sobre gerenciamento de memória e otimização de CPU.
-
-Order Service
-
-.NET 8 (Akka.NET)
-
-Modelo de Atores para evitar locks de banco de dados e garantir escalabilidade linear.
-
-Frontend
-
-Next.js 14
-
-SSR para o dashboard administrativo e atualizações em tempo real.
+Componente | Tecnologia | Justificativa
+--- | --- | ---
+Ingestion | Java 21 (Spring / Loki) | Modelo reativo para I/O não-bloqueante; logs estruturados para Loki.
+API Gateway / BFF | Node.js (NestJS) | Desenvolvimento rápido de APIs; ecossistema rico para autenticação JWT e WebSockets.
+Pricing Solver | C++ 20 (Drogon Framework) | Latência crítica; controle total sobre gerenciamento de memória e otimização de CPU.
+Order Service | .NET 8 (Supabase SDK) | Modelo de Atores + SDK REST para persistência estável.
+Catalog Service | .NET 8 (Supabase SDK) | Gestão de produtos via PostgREST nativo.
+Frontend | Next.js 14 | SSR para o dashboard administrativo e atualizações em tempo real.
 
 4. Estratégia de Dados (Databases)
 
-Para suportar os diferentes requisitos de cada serviço, adotamos uma estratégia de Polyglot Persistence:
+Para suportar os diferentes requisitos de cada serviço, adotamos uma estratégia de Polyglot Persistence centralizada no BaaS:
 
-MongoDB (Ingestion Layer): Armazenamento de telemetria IoT bruto. O esquema flexível permite diferentes tipos de sensores sem migrações complexas.
+**Supabase (Catalog & Order Services):** Centraliza a persistência relacional. A comunicação via PostgREST (HTTPS) resolve problemas de pool de conexões TCP e oferece segurança nativa via API Key/JWT.
 
-PostgreSQL (Order Service): Persistência relacional para o estado final dos pedidos. Utilizado como "Read Model" no padrão CQRS.
+**Redis (Cache de Preços):** Cache de curtíssima duração (TTL < 5s) para os preços calculados pelo motor C++, reduzindo a pressão sobre o Solver gRPC.
 
-EventStoreDB ou PostgreSQL (Event Sourcing): Utilizado pelo Akka.NET para armazenar o log de eventos de cada pedido, garantindo auditabilidade total.
-
-Redis (Cache de Preços): Cache de curtíssima duração (TTL < 5s) para os preços calculados pelo motor C++, reduzindo a pressão sobre o Solver gRPC.
+**MongoDB (Ingestion Layer):** (Opcional/Legacy) Armazenamento de telemetria IoT bruto para análise histórica massiva.
 
 5. Pipeline de CI/CD e Infraestrutura
 
@@ -98,13 +69,11 @@ Polly (.NET) & Resilience4j (Java): Implementação de Circuit Breaker para evit
 
 Dead Letter Queues (DLQ): Mensagens do Kafka que falharem após 3 retentativas são movidas para análise.
 
-Monitoramento:
+**Monitoramento de Container:** **cAdvisor** e **Prometheus** coletam métricas de hardware e performance em tempo real.
 
-OpenTelemetry: Instrumentação de todos os serviços para rastreio distribuído.
+**Agregação de Logs:** **Loki** e **Promtail** centralizam os logs de todas as linguagens (Java, C#, C++, Node.js) em uma única interface.
 
-Jaeger: Visualização do tempo de vida de uma requisição (Trace).
-
-Prometheus & Grafana: Métricas de negócio (throughput de vendas) e infra (uso de memória C++).
+**Visualização:** **Grafana** provê dashboards de saúde da infraestrutura e KPIs de negócio.
 
 7. Contratos de Comunicação
 

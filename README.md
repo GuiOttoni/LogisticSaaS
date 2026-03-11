@@ -8,11 +8,12 @@
 |--------|-----------|-----------|
 | Frontend Control Plane | Next.js 14 | **Vercel** |
 | API Gateway / BFF | Node.js (NestJS) | Kubernetes |
-| Ingestion Layer | Java 21 (Spring WebFlux) | Kubernetes |
-| Pricing Solver | C++ 20 (Drogon + gRPC) | Kubernetes |
-| Order Service | .NET 8 (Akka.NET) | Kubernetes |
+| Ingestion Layer | Java 21 (Spring / Loki) | Kubernetes |
+| Pricing Solver | C++ 20 (Drogon / gRPC) | Kubernetes |
+| Order Service | .NET 8 (Supabase SDK) | Kubernetes |
+| Catalog Service | .NET 8 (Supabase SDK) | Kubernetes |
 | Banco de Dados | PostgreSQL via **Supabase** | Supabase Cloud |
-| Cache | Redis | Kubernetes |
+| Observabilidade | Loki + Prometheus + Grafana | Kubernetes |
 | Mensageria | Apache Kafka | Kubernetes |
 
 ---
@@ -80,9 +81,12 @@ make migrate
 | Gateway | 3001 |
 | Ingestion | 3002 |
 | Pricing Solver | 3003 |
-| Order Service | 3004 |
-| Kafka UI | 8080 |
-| Redis Commander | 8081 |
+| Catalog Service | 3005 |
+| Grafana (Dashboards) | 3006 |
+| Prometheus | 9090 |
+| Loki | 3001 |
+| Kafka UI | 8081 |
+| Redis Commander | 8082 |
 | Supabase Studio | 54323 |
 
 ## Comandos Make

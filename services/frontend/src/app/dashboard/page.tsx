@@ -6,13 +6,15 @@ import OverviewView from "@/components/views/OverviewView";
 import RulesView from "@/components/views/RulesView";
 import InventoryView from "@/components/views/InventoryView";
 import ActorsView from "@/components/views/ActorsView";
-import { Activity, Settings, Package, Cpu, RefreshCcw, ShieldAlert } from "lucide-react";
+import TestLabView from "@/components/views/TestLabView";
+import { Activity, Settings, Package, Cpu, RefreshCcw, ShieldAlert, Beaker } from "lucide-react";
 
 const VIEWS: Record<string, { label: string; subtitle: string }> = {
   overview: { label: "Painel de Inteligência", subtitle: "Processando telemetria em tempo real" },
   rules: { label: "Motor de Regras", subtitle: "Configuração de lógica de negócio para o Solver" },
   inventory: { label: "Inventário Global", subtitle: "Visibilidade total da cadeia de suprimentos" },
   actors: { label: "Hierarquia de Atores", subtitle: "Monitorização do sistema de atores Akka.NET" },
+  testlab: { label: "Test Lab & Observability", subtitle: "Playground do sistema para testes de estresse em tempo real" }
 };
 
 const NAV_ITEMS = [
@@ -20,6 +22,7 @@ const NAV_ITEMS = [
   { id: "rules", label: "Regras de Preço", icon: Settings },
   { id: "inventory", label: "Inventário Global", icon: Package },
   { id: "actors", label: "Status de Atores", icon: Cpu },
+  { id: "testlab", label: "Test Lab", icon: Beaker },
 ];
 
 export default function DashboardPage() {
@@ -42,6 +45,7 @@ export default function DashboardPage() {
       case "rules":      return <RulesView />;
       case "inventory":  return <InventoryView />;
       case "actors":     return <ActorsView />;
+      case "testlab":    return <TestLabView />;
       default:           return <OverviewView latency={latency} />;
     }
   };

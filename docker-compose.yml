@@ -14,6 +14,7 @@ services:
       - NEXT_PUBLIC_GATEWAY_URL=http://gateway:3001
     depends_on:
       - gateway
+      - promtail
     networks:
       - omnidynamic
 
@@ -34,9 +35,12 @@ services:
       - PRICING_SOLVER_GRPC_HOST=pricing-solver
       - PRICING_SOLVER_GRPC_PORT=50051
       - ORDER_SERVICE_URL=http://order-service:3004
+      - CATALOG_SERVICE_URL=http://catalog-service:3005
     depends_on:
       - pricing-solver
       - order-service
+      - catalog-service
+      - promtail
     networks:
       - omnidynamic
 
@@ -54,8 +58,8 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_TOPIC_INVENTORY=inventory-events
     depends_on:
-      kafka:
-        condition: service_healthy
+      - promtail
+      - kafka
     networks:
       - omnidynamic
 
@@ -68,13 +72,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3003:3003" # HTTP debug
-      - "50051:50051" # gRPC
+      - "50060:50051" # gRPC
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - redis
+      - promtail
     networks:
       - omnidynamic
 
@@ -89,11 +94,30 @@ services:
       - "3004:3004"
     environment:
       - ORDER_SERVICE_PORT=3004
-      - SUPABASE_DB_URL_ORDERS=${DATABASE_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
-      kafka:
-        condition: service_healthy
+      - promtail
+      - kafka
+    networks:
+      - omnidynamic
+
+  # ===================================================================
+  # CATALOG SERVICE - .NET 8 / Minimal API
+  # ===================================================================
+  catalog-service:
+    build:
+      context: ./services/catalog-service
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    environment:
+      - ASPNETCORE_URLS=http://+:3005
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    depends_on:
+      - promtail
     networks:
       - omnidynamic
 
@@ -146,12 +170,77 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
     depends_on:
       - kafka
+    networks:
+      - omnidynamic
+
+  # ===================================================================
+  # OBSERVABILITY
+  # ===================================================================
+  loki:
+    image: grafana/loki:main
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - omnidynamic
+
+  promtail:
+    image: grafana/promtail:main
+    volumes:
+      - ./infra/monitoring/promtail/config.yml:/etc/promtail/config.yml
+      # Mount docker socket for reading container logs if we decide to
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yml
+    ports:
+      - "1514:1514"
+      - "9080:9080"
+    depends_on:
+      - loki
+    networks:
+      - omnidynamic
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - omnidynamic
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    command:
+      - '-port=8080'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - omnidynamic
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3006:3000"
+    volumes:
+      - ./infra/monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - loki
+      - prometheus
     networks:
       - omnidynamic
 

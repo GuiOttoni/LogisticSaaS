@@ -1,0 +1,129 @@
+# =============================================================================
+# LogisticSaaS - .gitignore
+# Node.js, .NET, Docker, Kubernetes
+# =============================================================================
+
+# ── Secrets & Environment ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# ── Node.js / TypeScript ─────────────────────────────────────────────────────
+node_modules/
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+coverage/
+.nyc_output/
+
+# ── .NET / C# ─────────────────────────────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.nupkg
+*.snupkg
+*.pfx
+TestResults/
+.vs/
+.vscode/launch.json
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ── Docker ───────────────────────────────────────────────────────────────────
+.docker/
+docker-compose.override.yml
+
+# ── Kubernetes / Helm ────────────────────────────────────────────────────────
+*.kubeconfig
+kubeconfig
+charts/*.tgz
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+gateway-error.log
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.idea/
+*.swp
+*.swo
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# ── Python (pricing-solver) ──────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# ── Terraform / Infra ────────────────────────────────────────────────────────
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/.terraform.lock.hcl
+infra/terraform.tfvars
+infra/*.auto.tfvars
+
+# ── Supabase ─────────────────────────────────────────────────────────────────
+supabase/.temp/
+
+# ── Misc ─────────────────────────────────────────────────────────────────────
+*.tmp
+*.bak
+prototipo.js

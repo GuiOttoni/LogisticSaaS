@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('orders')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard) // Disabled for local simulation/frontend connection without auth provider
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}

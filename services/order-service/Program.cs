@@ -1,8 +1,22 @@
 using Akka.Actor;
 using Microsoft.OpenApi.Models;
 using OmniDynamic.OrderService.Actors;
+using Serilog;
+using Serilog.Sinks.Grafana.Loki;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Application", "OrderService")
+    .WriteTo.Console()
+    .WriteTo.GrafanaLoki(
+        "http://loki:3100",
+        propertiesAsLabels: new[] { "Application" })
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Akka.NET ActorSystem
 builder.Services.AddSingleton(_ => ActorSystem.Create("OmniDynamic",

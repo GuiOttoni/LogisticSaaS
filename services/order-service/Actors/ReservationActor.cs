@@ -79,9 +79,14 @@ public class ReservationSupervisorActor : ReceiveActor
         Receive<GetReservation>(msg =>
         {
             var child = Context.Child(msg.OrderId);
-            child.IsNobody()
-                ? Sender.Tell(null)
-                : child.Forward(msg);
+            if (child.IsNobody())
+            {
+                Sender.Tell(null);
+            }
+            else
+            {
+                child.Forward(msg);
+            }
         });
     }
 }

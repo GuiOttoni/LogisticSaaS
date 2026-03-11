@@ -1,30 +1,42 @@
-"use client";
-
+import { useState, useEffect } from "react";
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { AlertCircle, ShieldAlert, Zap, Cpu, TrendingUp, Activity } from "lucide-react";
 import StatCard from "@/components/StatCard";
-
-const MOCK_DATA = [
-  { time: "10:00", price: 150, latency: 12, inventory: 450, actors: 1150000 },
-  { time: "10:05", price: 155, latency: 14, inventory: 420, actors: 1180000 },
-  { time: "10:10", price: 162, latency: 11, inventory: 380, actors: 1210000 },
-  { time: "10:15", price: 158, latency: 15, inventory: 310, actors: 1250000 },
-  { time: "10:20", price: 170, latency: 13, inventory: 250, actors: 1220000 },
-  { time: "10:25", price: 175, latency: 12, inventory: 180, actors: 1280000 },
-];
 
 interface OverviewViewProps {
   latency: number;
 }
 
 export default function OverviewView({ latency }: OverviewViewProps) {
+  const [mockData, setMockData] = useState([
+    { time: "10:00", price: 150, latency: 12, inventory: 450, actors: 1150000 },
+    { time: "10:05", price: 155, latency: 14, inventory: 420, actors: 1180000 },
+    { time: "10:10", price: 162, latency: 11, inventory: 380, actors: 1210000 },
+    { time: "10:15", price: 158, latency: 15, inventory: 310, actors: 1250000 },
+    { time: "10:20", price: 170, latency: 13, inventory: 250, actors: 1220000 },
+    { time: "10:25", price: 175, latency: 12, inventory: 180, actors: 1280000 },
+  ]);
+
+  const [activeActors, setActiveActors] = useState(1280000);
+  const [salesHour, setSalesHour] = useState(842);
+  const [eventsSec, setEventsSec] = useState(42.5);
+
+  useEffect(() => {
+    const i = setInterval(() => {
+        setActiveActors(prev => prev + Math.floor(Math.random() * 50 - 20));
+        setSalesHour(prev => prev + Math.random() * 5);
+        setEventsSec(prev => prev + (Math.random() * 2 - 1));
+    }, 3000);
+    return () => clearInterval(i);
+  }, []);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Latência P99 (C++)" value={`${Number(latency).toFixed(2)} ms`} icon={Zap} color="bg-amber-500" trend={-2} />
-        <StatCard title="Atores Ativos (Akka)" value="1.2M" icon={Cpu} color="bg-blue-500" trend={12} />
-        <StatCard title="Vendas/Hora" value="R$ 842k" icon={TrendingUp} color="bg-emerald-500" trend={5} />
-        <StatCard title="Eventos/Seg (Java)" value="42.5k" icon={Activity} color="bg-purple-500" />
+        <StatCard title="Atores Ativos (Akka)" value={`${(activeActors / 1000000).toFixed(2)}M`} icon={Cpu} color="bg-blue-500" trend={12} />
+        <StatCard title="Vendas/Hora" value={`R$ ${salesHour.toFixed(0)}k`} icon={TrendingUp} color="bg-emerald-500" trend={5} />
+        <StatCard title="Eventos/Seg (Java)" value={`${eventsSec.toFixed(1)}k`} icon={Activity} color="bg-purple-500" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -32,7 +44,7 @@ export default function OverviewView({ latency }: OverviewViewProps) {
           <h4 className="font-bold text-lg mb-6 text-white">Fluxo de Preço vs Inventário</h4>
           <div className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={MOCK_DATA}>
+              <AreaChart data={mockData}>
                 <defs>
                   <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />

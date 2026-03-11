@@ -36,15 +36,18 @@ O fluxo de negócio está focado na automação de processos inteligentes basead
 
 A lógica de aplicação distribui componentes visando a extração máxima de performance. 
 - **API Gateway / BFF (Node.js/NestJS):** Orquestra tráfego externo, lida com segredos, WebSockets e autenticação HTTP segura.
-- **Ingestion Layer (Java 21 / Spring WebFlux):** Escuta de forma assíncrona todas as batidas e eventos do IoT. Não bloqueante por natureza. 
+
+- **Ingestion Layer (Java 21 / Spring WebFlux):** Escuta de forma assíncrona todas as batidas e eventos do IoT. Não bloqueante por natureza.
+
 - **Pricing Solver (C++ 20 / Drogon):** Algoritmo de performance extrema projetado para rodar os cálculos matemáticos e entregar respostas em <15ms.
-- **Order Service (.NET 8 / Akka.NET):** Emprega *Modelo de Atores* que possibilita manipular memória transacional do estado sem forçar travas simultâneas agressivas nos bancos de dados, gerindo o "Stock locked".
+- **Order Service (.NET 8):** Adota o *Modelo de Atores* via Akka.NET para gestão de reservas de estoque. Utiliza o **Supabase C# SDK** para persistência via PostgREST, garantindo estabilidade em ambientes de rede restritos e alta fidelidade com os tipos de dados do BaaS.
+- **Catalog Service (.NET 8):** Microsserviço de gestão de SKU e auditoria de estoque. Também migrado de EF Core para o **Supabase SDK** nativo.
 - **Dashboard Institucional & Control Plane:** Realizado em **Next.js 14**.
 
 ### 3.2 Arquitetura de Dados (Data Architecture)
 
-Todas as áreas convergem para um back-end robusto, com a substituição das ramificações isoladas do banco de dados relacional para o **Supabase** centralizado (postgreSQL as a service):
-- **O Supabase como SOT (Source of Truth):** Abriga as `pricing_rules`, guarda os logs no esquema `audit` (`price_change_logs`), e manipula os relatórios achatados do CQRS de `inventory_snapshot`. 
+Todas as áreas convergem para um back-end robusto, com a substituição das ramificações isoladas do banco de dados relacional para o **Supabase** centralizado (PostgreSQL as a Service):
+- **O Supabase como SOT (Source of Truth):** Abriga as `pricing_rules`, guarda os logs no esquema `audit` (`price_change_logs`). A comunicação é realizada prioritariamente via HTTPS/REST (PostgREST) para evitar overhead de conexões TCP em redes bridge (Docker).
 - **Message Backbone (Apache Kafka):** Garante buffer e roteamento (Pub/Sub AsyncAPI) do excesso global da ingestão para que o banco não colapse nas janelas críticas.
 - **Cache Layer (Redis):** Gerencia locks otimistas curtos (`inventory_lock:{sku}`) e provê a cópia do cálculo final (`price:{sku_id}`) por segundos limitados (TTL 5s) à borda.
 
@@ -53,9 +56,10 @@ Todas as áreas convergem para um back-end robusto, com a substituição das ram
 ## 4. Arquitetura Tecnológica (Fase D - Technology Architecture)
 
 A infraestrutura foi desenhada para a era Cloud-Native:
-- **Hospedagem Front-end:** O Dashboard em Next.js e seus server-components/SSR são servidos através da **Vercel**, aproveitando CDNs otimizadas.
-- **BaaS e Database:** **Supabase**, lidando com dados persistentes PostgreSQL, atuando como core da infraestrutura relacional, suprindo a camada *Realtime* nativamente quando necessário para as views de analistas.
-- **Orquestração de Microserviços:** Todos os microserviços (Java, C++, .NET e Node.js) serão conteinerizados via Docker Image Layers e emparelhados e gerenciados no ecossistema do **Kubernetes (K8s)**. O K8s lidará com *Horizontal Pod Autoscaling (HPA)*, isolando gargalos, e proverá *network policies* para o limite dos *Services*. Ferramentas de CI/CD aplicam manifestos do K8s ou via *Helm/ArgoCD*.
+- **Hospedagem Front-end:** O Dashboard em Next.js e seus server-components/SSR são servidos através da **Vercel**.
+- **BaaS e Database:** **Supabase**, lidando com dados persistentes PostgreSQL, atuando como core da infraestrutura relacional.
+- **Observabilidade:** Stack local de monitoramento composta por **Grafana**, **Prometheus**, **cAdvisor**, **Loki** e **Promtail**, permitindo visibilidade de métricas de hardware (CPU/RAM) e logs centralizados de todos os microserviços.
+- **Orquestração de Microserviços:** Todos os microserviços são conteinerizados via Docker. Em produção, são gerenciados no ecossistema do **Kubernetes (K8s)**.
 
 ---
 
@@ -63,21 +67,25 @@ A infraestrutura foi desenhada para a era Cloud-Native:
 
 Para carregar estes diagramas nativamente em repositórios Markdown, utilizamos Mermaid:
 
+
 ### 5.1 Diagrama de Contexto (C4 Nível 1)
+
 ```mermaid
 C4Context
     title Contexto de Sistema - OmniDynamic Engine
 
     Person(analyst, "Analista/Gestor", "Configura e simula regras de preço e estoque")
     System(omnidynamic, "OmniDynamic Engine", "Plataforma central de precificação e inventário omnichannel")
+    System(observability, "Observability Cloud", "Loki, Prometheus e Grafana para monitoramento")
     
     System_Ext(iot_sensors, "Sensores IoT & WMS", "Enviam leitura massiva de estoque e entrada")
     System_Ext(ecommerce, "E-commerce App", "Consulta preços finais e reserva checkout")
 
     Rel(analyst, omnidynamic, "Visualiza painel analítico e imputa regras")
+    Rel(analyst, observability, "Monitora métricas de saúde e logs")
     Rel(iot_sensors, omnidynamic, "Dispara eventos e logs físicos")
+    Rel(omnidynamic, observability, "Exporta logs e métricas de container")
     Rel(omnidynamic, ecommerce, "Provê precificação justa e bloqueio pontual")
-    Rel(ecommerce, omnidynamic, "Realiza requisições HTTP seguras e GraphQL")
 ```
 
 ### 5.2 Diagrama de Contêiners (C4 Nível 2)
@@ -87,32 +95,39 @@ C4Container
 
     Person(user, "Equipe Interna", "Analistas, SREs e Gerentes")
     
-    System_Boundary(c1, "Cluster Kubernetes") {
+    System_Boundary(c1, "Container Engine") {
         Container(gateway, "API Gateway / BFF", "Node.js (NestJS)", "Exposição segura, WebSocket, autenticação JWT.")
-        Container(ingestion, "Ingestion Layer", "Java 21", "Modelo reativo WebFlux suportando alto I/O externo.")
+        Container(ingestion, "Ingestion Layer", "Java 21", "Modelo reativo WebFlux + Logback para Loki.")
         Container(solver, "Pricing Solver", "C++ 20 (Drogon)", "Microsegundos de latência em cálculos financeiros.")
-        Container(order_sys, "Order Service", ".NET 8 (Akka)", "Gerenciamento de Atores que representam reserva e compra.")
+        Container(order_sys, "Order Service", ".NET 8 (Akka)", "Atores + Supabase SDK (REST).")
+        Container(catalog_sys, "Catalog Service", ".NET 8", "Gestão de SKU + Supabase SDK (REST).")
+        
+        System_Boundary(obs, "Observabilidade") {
+           Container(loki, "Loki", "Grafana Stack", "Agregação de logs indexados.")
+           Container(prom, "Prometheus", "Metrics Engine", "Coleta métricas do cAdvisor e apps.")
+           Container(grafana, "Grafana", "Visualization", "Dashboards técnicos e de negócio.")
+        }
     }
 
     Container(frontend, "Frontend Control Plane", "Next.js (Vercel)", "Dashboard administrativo SSR reativo.")
-    ContainerDb(supabase, "Data Cloud", "Supabase", "Repositório relacional mestre das operações (PostgreSQL).")
-    ContainerDb(kafka, "Event Backbone", "Apache Kafka", "Broker distribuído contendo streams de dados e ações de IoT.")
-    ContainerDb(redis, "Fast Cache Layer", "Servidor Redis", "Cache na memória p/ tabelas temporárias com base em chaves únicas.")
+    ContainerDb(supabase, "Data Cloud", "Supabase", "PostgreSQL (PostgREST API) para microsserviços.")
+    ContainerDb(kafka, "Event Backbone", "Apache Kafka", "Streams de dados e ações de IoT.")
 
     Rel(user, frontend, "Acessa via Browser HTTPS")
+    Rel(user, grafana, "Visualiza saúde do sistema")
     Rel(frontend, gateway, "Usa APIs de negócio")
     
     Rel(gateway, solver, "Solicita precificação (gRPC)")
-    Rel(gateway, order_sys, "Comunicação Order/Checkout")
-    Rel(gateway, supabase, "Gerencia perfis/auditoria CRM diretamente")
+    Rel(gateway, order_sys, "Reserva de estoque")
+    Rel(gateway, catalog_sys, "Listagem de SKU")
 
     Rel(ingestion, kafka, "Produz logs em streaming")
-    Rel(solver, kafka, "Consome métricas p/ recalculo ágil")
-    Rel(order_sys, kafka, "Gerador de Action-Requests de fila")
-
-    Rel(solver, supabase, "Consulta logs, atualiza preço calculado nas tabelas mestre")
-    Rel(solver, redis, "Atribui cache no TLL (5s) das precificações lógicas")
-    Rel(order_sys, supabase, "Submete eventos atômicos dos Atores (.NET)")
+    Rel(order_sys, supabase, "Query/Update via REST SDK")
+    Rel(catalog_sys, supabase, "Query/Update via REST SDK")
+    
+    Rel(gateway, loki, "Envia Logs (Winston)")
+    Rel(catalog_sys, loki, "Envia Logs (Serilog)")
+    Rel(order_sys, loki, "Envia Logs (Serilog)")
 ```
 
 ---
@@ -187,3 +202,56 @@ sequenceDiagram
     SOLVER->>REDIS: SET price_cache com novo Preço (TTL curto p/ concorrência)
     SOLVER->>SUPA: INSERT em PriceChangeLog justificando margem (Audit)
 ```
+
+---
+
+## 7. Arquitetura Estratégica (DDD)
+
+A decomposição do sistema segue os princípios do **Domain-Driven Design (DDD)** para garantir o desacoplamento e a especialização das regras de negócio.
+
+### 7.1 Classificação de Subdomínios
+
+1.  **Core Domain (Domínio Central):** **Dynamic Pricing**. É o "coração" do OmniDynamic Engine, onde reside o diferencial competitivo da precificação preditiva.
+2.  **Supporting Subdomains (Domínios de Suporte):** 
+    -   **Catalog & Inventory:** Fornece o mestre de produtos e saldos base para os cálculos.
+    -   **Orders & Fulfillment:** Gerencia o ciclo de vida da reserva e o estado transacional do estoque.
+3.  **Generic Subdomains (Domínios Genéricos):**
+    -   **Telemetry Ingestion:** Lida com a complexidade técnica de ingestão massiva de IoT, independente das regras de preço.
+    -   **Observability:** Stack de monitoramento (Loki/Prometheus).
+
+### 7.2 Mapa de Contexto (Context Map)
+
+```mermaid
+graph TD
+    subgraph "Core Domain: Dynamic Pricing"
+        PE[Bounded Context: Pricing Engine]
+        PR[Bounded Context: Pricing Rules]
+    end
+
+    subgraph "Supporting Domain: Inventory"
+        PM[Bounded Context: Product Management]
+        OF[Bounded Context: Order Fulfillment]
+    end
+
+    subgraph "Generic Domain: Logistics"
+        TI[Bounded Context: Telemetry Ingestion]
+    end
+
+    subgraph "Generic Domain: Operations"
+        OM[Bounded Context: Observability & Monitoring]
+    end
+
+    TI -- "Events (Kafka)" --> PE
+    PE -- "Retrieves SKU info (REST)" --> PM
+    OF -- "Locks/Reserves Stock" --> PM
+    
+    PE -- "Downstream (Audit Logs)" --> OM
+    PM -- "Logs" --> OM
+    OF -- "Logs" --> OM
+```
+
+### 7.3 Linguagem Ubíqua (Glossário Resumido)
+-   **SKU (Stock Keeping Unit):** Identificador único de produto para cálculo.
+-   **Price Rule:** Gatilho booleano que determina quando um preço deve mudar.
+-   **Lock:** Bloqueio temporário de estoque durante o checkout (TTL-based).
+-   **Telemetry:** Batidas de sensores IoT representando movimentação física.

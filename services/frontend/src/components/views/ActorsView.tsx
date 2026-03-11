@@ -31,6 +31,28 @@ export default function ActorsView() {
           <span className="font-bold text-blue-400">1.250.342</span> entidades de estoque.
         </p>
 
+        <button
+          onClick={async () => {
+            const btn = document.getElementById('simulate-btn');
+            if (btn) btn.innerText = "Enviando mock request...";
+            try {
+              const { OrdersService } = await import("@/lib/api");
+              await OrdersService.simulateLoad(10);
+              if (btn) btn.innerText = "Orders Criadas!";
+            } catch (e) {
+              console.error(e);
+              if (btn) btn.innerText = "Falha ao criar Mock";
+            }
+            setTimeout(() => {
+              if (btn) btn.innerText = "Simular Carga de Pedidos (10x)";
+            }, 3000);
+          }}
+          id="simulate-btn"
+          className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2 rounded-lg font-bold transition-colors mb-8 shadow-lg shadow-purple-500/20"
+        >
+          Simular Carga de Pedidos (10x)
+        </button>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
           {METRICS.map((m) => (
             <div key={m.label} className="p-4 bg-slate-900 rounded-xl border border-slate-800">
