@@ -6,10 +6,16 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('orders')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard) // Disabled for local simulation/frontend connection without auth provider
+// TODO [SECURITY]: Re-enable before any public/production deployment.
+// @UseGuards(JwtAuthGuard) // Temporarily disabled for local dev — all order endpoints are UNPROTECTED
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
+
+  @Get()
+  findAll() {
+    return this.ordersService.findAll();
+  }
 
   @Post('reservations')
   reserve(@Body() dto: CreateReservationDto) {

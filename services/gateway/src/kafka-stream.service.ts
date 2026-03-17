@@ -18,25 +18,44 @@ export class KafkaStreamService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit() {
-    await this.consumer.connect();
-    
-    // Subscribe to interesting topics
-    await this.consumer.subscribe({ topic: 'inventory-events', fromBeginning: false });
-    await this.consumer.subscribe({ topic: 'order-events', fromBeginning: false });
+    this.connectWithRetry();
+  }
 
-    await this.consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const payload = message.value?.toString() || '{}';
+  private async connectWithRetry(retries = 20) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        console.log(`Connecting to Kafka (attempt ${i + 1}/${retries})...`);
+        await this.consumer.connect();
         
-        this.eventSubject.next({
-          data: JSON.stringify({
-            topic,
-            timestamp: message.timestamp,
-            payload: JSON.parse(payload)
-          })
+        // Subscribe to interesting topics
+        await this.consumer.subscribe({ topic: 'inventory-events', fromBeginning: false });
+        await this.consumer.subscribe({ topic: 'order-events', fromBeginning: false });
+
+        await this.consumer.run({
+          eachMessage: async ({ topic, partition, message }) => {
+            try {
+              const payload = message.value?.toString() || '{}';
+              this.eventSubject.next({
+                data: JSON.stringify({
+                  topic,
+                  timestamp: message.timestamp,
+                  payload: JSON.parse(payload)
+                })
+              });
+            } catch (e) {
+              console.error(`Error processing Kafka message: ${e.message}`);
+            }
+          },
         });
-      },
-    });
+        
+        console.log('Successfully connected to Kafka');
+        return;
+      } catch (e) {
+        console.error(`Failed to connect to Kafka: ${e.message}. Retrying in 5 seconds...`);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
+    console.error('Failed to connect to Kafka after multiple retries.');
   }
 
   async onModuleDestroy() {

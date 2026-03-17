@@ -14,11 +14,6 @@ Checklist de implementação:
 - [ ] Fazer implementação de alteração de reserva de estoque
 - [ ] Fazer implementação de alteração de preço
 - [ ] Fazer implementação de alteração de estoque
-- [ ] Fazer implementação de alteração de preço e estoque
-- [ ] Fazer implementação de alteração de preço e estoque e reserva de estoque
-- [ ] Fazer implementação de alteração de preço e estoque e reserva de estoque e cancelamento de reserva de estoque
-- [ ] Fazer implementação de alteração de preço e estoque e reserva de estoque e cancelamento de reserva de estoque e alteração de preço e estoque e reserva de estoque e cancelamento de reserva de estoque
-
 
 > Plataforma ultra-escalável de **precificação dinâmica** e **gestão de inventário** em tempo real para o varejo global.
 

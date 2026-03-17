@@ -1,0 +1,158 @@
+docker : --progress is 
+a global compose flag, 
+better use `docker 
+compose --progress xx 
+build ...
+No linha:1 caractere:1
++ docker compose build 
+frontend 
+--progress=plain 2>&1 
+| Out-File -FileP ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (--progress is   
+  a...ss xx build .    
+..:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+ Image logisticsaas-cat
+alog-service Building 
+ Image logisticsaas-ord
+er-service Building 
+ Image logisticsaas-pri
+cing-solver Building 
+ Image 
+logisticsaas-frontend 
+Building 
+ Image 
+logisticsaas-gateway 
+Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 2.47kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 777B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:20-alpine
+#3 ...
+
+#4 [auth] library/node:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:20-alpine
+#3 DONE 1.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [base 1/1] FROM docker.io/library/node:20-alpine@sha256:b88333c42c23fbd91596ebd7fd10de239cedab9617de04142dde7315e3bc0afa
+#6 resolve docker.io/library/node:20-alpine@sha256:b88333c42c23fbd91596ebd7fd10de239cedab9617de04142dde7315e3bc0afa 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 2.53MB 0.9s done
+#7 DONE 1.0s
+
+#8 [deps 2/4] WORKDIR /app
+#8 CACHED
+
+#9 [builder 2/4] COPY --from=deps /app/node_modules ./node_modules
+#9 CACHED
+
+#10 [builder 1/4] WORKDIR /app
+#10 CACHED
+
+#11 [deps 3/4] COPY package*.json ./
+#11 CACHED
+
+#12 [deps 4/4] RUN npm install
+#12 CACHED
+
+#13 [deps 1/4] RUN apk add --no-cache libc6-compat
+#13 CACHED
+
+#14 [builder 3/4] COPY . .
+#14 CACHED
+
+#15 [builder 4/4] RUN npm run build
+#15 0.535 
+#15 0.535 > omnidynamic-frontend@0.1.0 build
+#15 0.535 > next build
+#15 0.535 
+#15 1.097 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+#15 1.097 This information is used to shape Next.js' roadmap and prioritize features.
+#15 1.097 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#15 1.097 https://nextjs.org/telemetry
+#15 1.097 
+#15 1.148   ??? Next.js 14.2.3
+#15 1.148 
+#15 1.433    Creating an optimized production build ...
+#15 15.65  ??? Compiled successfully
+#15 15.65    Linting and checking validity of types ...
+#15 19.22 Failed to compile.
+#15 19.22 
+#15 19.22 ./src/components/views/RulesView.tsx:19:45
+#15 19.22 Type error: Property 'getConfig' does not exist on type '{ getRules: () => Promise<any>; createRule: (payload: any) => Promise<any>; calculatePrice: (payload: { base_price: number; stock_level: number; sku?: string | undefined; category?: string | undefined; }) => Promise<...>; }'.
+#15 19.22 
+#15 19.22 [0m [90m 17 |[39m       [36mtry[39m {[0m
+#15 19.22 [0m [90m 18 |[39m         setIsLoading([36mtrue[39m)[33m;[39m[0m
+#15 19.22 [0m[31m[1m>[22m[39m[90m 19 |[39m         [36mconst[39m config [33m=[39m [36mawait[39m [33mPricingService[39m[33m.[39mgetConfig()[33m;[39m[0m
+#15 19.22 [0m [90m    |[39m                                             [31m[1m^[22m[39m[0m
+#15 19.22 [0m [90m 20 |[39m         [36mif[39m (config) {[0m
+#15 19.22 [0m [90m 21 |[39m           setBasePrice(config[33m.[39mbasePrice [33m||[39m [35m15.0[39m)[33m;[39m[0m
+#15 19.22 [0m [90m 22 |[39m           setSurgeMultiplier(config[33m.[39msurgeMultiplier [33m||[39m [35m1.2[39m)[33m;[39m[0m
+#15 19.26 npm notice
+#15 19.26 npm notice New major version of npm available! 10.8.2 -> 11.11.1
+#15 19.26 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.11.1
+#15 19.26 npm notice To update run: npm install -g npm@11.11.1
+#15 19.26 npm notice
+#15 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+------
+ > [builder 4/4] RUN npm run build:
+19.22 [0m[31m[1m>[22m[39m[90m 19 |[39m         [36mconst[39m config [33m=[39m [36mawait[39m [33mPricingService[39m[33m.[39mgetConfig()[33m;[39m[0m
+19.22 [0m [90m    |[39m                                             [31m[1m^[22m[39m[0m
+19.22 [0m [90m 20 |[39m         [36mif[39m (config) {[0m
+19.22 [0m [90m 21 |[39m           setBasePrice(config[33m.[39mbasePrice [33m||[39m [35m15.0[39m)[33m;[39m[0m
+19.22 [0m [90m 22 |[39m           setSurgeMultiplier(config[33m.[39msurgeMultiplier [33m||[39m [35m1.2[39m)[33m;[39m[0m
+19.26 npm notice
+19.26 npm notice New major version of npm available! 10.8.2 -> 11.11.1
+19.26 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.11.1
+19.26 npm notice To update run: npm install -g npm@11.11.1
+19.26 npm notice
+------
+Dockerfile:15
+
+--------------------
+
+  13 |     COPY 
+--from=deps 
+/app/node_modules 
+./node_modules
+
+  14 |     COPY . .
+
+  15 | >>> RUN npm run 
+build
+
+  16 |     
+
+  17 |     # 
+Production runner
+
+--------------------
+
+failed to solve: 
+process "/bin/sh -c 
+npm run build" did not 
+complete successfully: 
+exit code: 1
+

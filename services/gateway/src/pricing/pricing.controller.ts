@@ -26,6 +26,11 @@ export class PricingController {
     return this.pricingService.create(dto);
   }
 
+  @Post('calculate')
+  calculate(@Body() payload: any) {
+    return this.pricingService.calculate(payload);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: Partial<CreateRuleDto>) {
     return this.pricingService.update(id, dto);

@@ -1,59 +1,61 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_CLIENT } from '../supabase/supabase.module';
-import { CreateRuleDto } from './dto/create-rule.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import axios from 'axios';
 
 @Injectable()
 export class PricingService {
-  constructor(@Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient) {}
+  private readonly baseUrl = 'http://pricing-solver:3003/pricing-rules';
 
   async findAll() {
-    const { data, error } = await this.supabase
-      .schema('pricing')
-      .from('pricing_rules')
-      .select('*')
-      .order('priority');
-    if (error) throw new Error(error.message);
-    return data;
+    try {
+      const res = await axios.get(this.baseUrl);
+      return res.data;
+    } catch (e) {
+      throw new Error(`Failed to fetch rules from C++ service: ${e.message}`);
+    }
   }
 
   async findOne(id: string) {
-    const { data, error } = await this.supabase
-      .schema('pricing')
-      .from('pricing_rules')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error || !data) throw new NotFoundException(`Rule ${id} not found`);
-    return data;
+    try {
+      const res = await axios.get(`${this.baseUrl}/${id}`);
+      return res.data;
+    } catch (e) {
+      throw new NotFoundException(`Rule ${id} not found in C++ service`);
+    }
   }
 
-  async create(dto: CreateRuleDto) {
-    const { data, error } = await this.supabase
-      .schema('pricing')
-      .from('pricing_rules')
-      .insert(dto)
-      .select()
-      .single();
-    if (error) throw new Error(error.message);
-    return data;
+  async create(dto: any) {
+    try {
+      const res = await axios.post(this.baseUrl, dto);
+      return res.data;
+    } catch (e) {
+      throw new Error(`Failed to create rule in C++ service: ${e.message}`);
+    }
   }
 
-  async update(id: string, dto: Partial<CreateRuleDto>) {
-    const { data, error } = await this.supabase
-      .schema('pricing')
-      .from('pricing_rules')
-      .update(dto)
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) throw new Error(error.message);
-    return data;
+  async update(id: string, dto: any) {
+    try {
+      const res = await axios.put(`${this.baseUrl}/${id}`, dto);
+      return res.data;
+    } catch (e) {
+      throw new Error(`Failed to update rule in C++ service: ${e.message}`);
+    }
   }
 
   async remove(id: string) {
-    const { error } = await this.supabase.schema('pricing').from('pricing_rules').delete().eq('id', id);
-    if (error) throw new Error(error.message);
-    return { deleted: true };
+    try {
+      await axios.delete(`${this.baseUrl}/${id}`);
+      return { deleted: true };
+    } catch (e) {
+      throw new Error(`Failed to delete rule in C++ service: ${e.message}`);
+    }
+  }
+
+  async calculate(payload: any) {
+    try {
+      const res = await axios.post('http://pricing-solver:3003/calculate', payload);
+      return res.data;
+    } catch (e) {
+      throw new Error(`Pricing Solver error: ${e.message}`);
+    }
   }
 }

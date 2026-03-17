@@ -14,6 +14,21 @@ export interface ConfigUpdatePayload {
   surgeMultiplier: number;
 }
 
+export interface PricingRule {
+  id: string;
+  name: string;
+  target_scope: 'GLOBAL' | 'SKU' | 'CATEGORY' | 'REGION';
+  target_id: string;
+  conditions: any;
+  action_logic: any;
+  priority: number;
+  is_active: boolean;
+  weight: number;
+  multiplier: number;
+  base_markup: number;
+  updated_at?: string;
+}
+
 export interface InventoryItem {
   id: string;
   productId: string;
@@ -27,26 +42,62 @@ export interface CreateOrderPayload {
 }
 
 export const PricingService = {
-  getConfig: async () => {
-    const res = await api.get('/pricing/config');
+  getRules: async () => {
+    const res = await api.get('/pricing-rules');
     return res.data;
   },
-  updateConfig: async (payload: ConfigUpdatePayload) => {
-    const res = await api.post('/pricing/config', payload);
+  getOne: async (id: string) => {
+    const res = await api.get(`/pricing-rules/${id}`);
     return res.data;
+  },
+  createRule: async (payload: any) => {
+    const res = await api.post('/pricing-rules', payload);
+    return res.data;
+  },
+  updateRule: async (id: string, payload: any) => {
+    const res = await api.put(`/pricing-rules/${id}`, payload);
+    return res.data;
+  },
+  deleteRule: async (id: string) => {
+    const res = await api.delete(`/pricing-rules/${id}`);
+    return res.data;
+  },
+  calculatePrice: async (payload: { base_price: number, stock_level: number, sku?: string, category?: string }) => {
+    const res = await api.post('/pricing-rules/calculate', payload);
+    return res.data;
+  },
+  // Legacy support for older components
+  getConfig: async () => {
+    try {
+      const rules = await PricingService.getRules();
+      return rules[0] || { basePrice: 15.0, surgeMultiplier: 1.2 };
+    } catch (e) { return null; }
+  },
+  updateConfig: async (payload: any) => {
+    return PricingService.createRule({
+      name: "Global Config Update",
+      target_scope: "GLOBAL",
+      priority: 100,
+      is_active: true,
+      conditions: {},
+      action_logic: payload
+    });
   }
 };
 
 export const OrdersService = {
+  getOrders: async () => {
+    const res = await api.get('/orders');
+    return res.data;
+  },
   createOrder: async (payload: { sku_id: string, order_id: string }) => {
     const res = await api.post('/orders/reservations', payload);
     return res.data;
   },
   simulateLoad: async (count: number) => {
-    // Generate an array of mock payloads
     const promises = Array.from({ length: count }).map((_, i) =>
       api.post('/orders/reservations', {
-        order_id: crypto.randomUUID(),
+        order_id: (Math.random()*1e16).toString(36), // Replace crypto.randomUUID for build safety
         sku_id: "SKU-992",
       })
     );
@@ -83,6 +134,18 @@ export const CatalogService = {
   },
   deleteProduct: async (id: string): Promise<void> => {
     const res = await api.delete(`/catalog/products/${id}`);
+    return res.data;
+  }
+};
+
+export const IngestionService = {
+  sendTelemetry: async (event: { skuId: string, warehouseId: string, eventType: string, quantityDelta: number }) => {
+    const payload = {
+      ...event,
+      sensorId: `SIM-${Math.random().toString(36).substring(7).toUpperCase()}`,
+      timestamp: new Date().toISOString()
+    };
+    const res = await api.post('/telemetry', payload);
     return res.data;
   }
 };

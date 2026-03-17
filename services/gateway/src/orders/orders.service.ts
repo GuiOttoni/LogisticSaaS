@@ -11,6 +11,15 @@ export class OrdersService {
     this.orderServiceUrl = this.config.get<string>('ORDER_SERVICE_URL', 'http://order-service:3004');
   }
 
+  async findAll() {
+    try {
+      const res = await axios.get(`${this.orderServiceUrl}/reservations`); // The .NET service has [Route("reservations")]
+      return res.data;
+    } catch (e) {
+      throw new Error(`Order Service Error: ${e.message}`);
+    }
+  }
+
   async createReservation(dto: CreateReservationDto) {
     const response = await axios.post(`${this.orderServiceUrl}/reservations`, dto);
     return response.data;

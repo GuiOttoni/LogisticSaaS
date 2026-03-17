@@ -1,6 +1,7 @@
 using Akka.Actor;
 using Microsoft.AspNetCore.Mvc;
 using OmniDynamic.OrderService.Actors;
+using OmniDynamic.OrderService.Services;
 
 namespace OmniDynamic.OrderService.Controllers;
 
@@ -9,8 +10,29 @@ namespace OmniDynamic.OrderService.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly ActorSystem _actorSystem;
+    private readonly Supabase.Client _supabase;
+    private readonly KafkaProducerService _producer;
 
-    public OrderController(ActorSystem actorSystem) => _actorSystem = actorSystem;
+    public OrderController(ActorSystem actorSystem, Supabase.Client supabase, KafkaProducerService producer)
+    {
+        _actorSystem = actorSystem;
+        _supabase    = supabase;
+        _producer    = producer;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetOrders()
+    {
+        try
+        {
+            var result = await _supabase.From<Models.Order>().Get();
+            return Ok(result.Models);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Database error", message = ex.Message });
+        }
+    }
 
     [HttpPost]
     public async Task<IActionResult> CreateReservation([FromBody] CreateReservationRequest req)
@@ -20,13 +42,25 @@ public class OrderController : ControllerBase
             new CreateReservation(req.SkuId, req.OrderId),
             TimeSpan.FromSeconds(5));
 
-        return Ok(new
+        var response = new
         {
             order_id   = result.OrderId,
             sku_id     = result.SkuId,
             expires_at = result.ExpiresAt,
             status     = "RESERVED"
+        };
+
+        // Publish reservation event so Gateway SSE broadcasts to frontend
+        _ = _producer.PublishAsync(result.SkuId, new
+        {
+            event_type = "RESERVATION_CREATED",
+            order_id   = result.OrderId,
+            sku_id     = result.SkuId,
+            expires_at = result.ExpiresAt,
+            timestamp  = DateTimeOffset.UtcNow
         });
+
+        return Ok(response);
     }
 
     [HttpGet("{orderId}")]

@@ -1,0 +1,489 @@
+docker :  Image logisti
+csaas-pricing-solver 
+Building 
+No linha:1 caractere:1
++ docker compose build 
+pricing-solver 
+--no-cache 2>&1 | tee 
+build_log.t ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ( Image logist   
+ ic...olver Buildin    
+g :String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+#1 [internal] load local bake definitions
+#1 reading from stdin 623B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 575B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/drogonframework/drogon:latest
+#3 ...
+
+#4 [auth] drogonframework/drogon:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/drogonframework/drogon:latest
+#3 DONE 1.9s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [builder 2/5] WORKDIR /build
+#6 CACHED
+
+#7 [builder 1/5] FROM docker.io/drogonframework/drogon:latest@sha256:5b518f6c44a7dcf545992fd486fb67b1f03303ce41c56e7fa0398e14c5cdeb29
+#7 resolve docker.io/drogonframework/drogon:latest@sha256:5b518f6c44a7dcf545992fd486fb67b1f03303ce41c56e7fa0398e14c5cdeb29 0.0s done
+#7 CACHED
+
+#8 [internal] load build context
+#8 transferring context: 571B done
+#8 DONE 0.0s
+
+#9 [builder 3/5] COPY . .
+#9 DONE 0.0s
+
+#10 [runner 2/4] RUN apt-get update && apt-get install -y librdkafka1 librdkafka++1 curl && rm -rf /var/lib/apt/lists/*
+#10 1.000 Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+#10 1.118 Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+#10 1.826 Get:3 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [3,786 kB]
+#10 2.079 Get:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+#10 2.351 Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+#10 2.623 Get:6 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+#10 3.329 Get:7 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1,302 kB]
+#10 3.395 Get:8 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [62.6 kB]
+#10 3.403 Get:9 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [6,669 kB]
+#10 4.459 Get:10 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+#10 4.464 Get:11 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+#10 4.477 Get:12 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1,792 kB]
+#10 4.592 Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [6,877 kB]
+#10 4.924 Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4,120 kB]
+#10 5.093 Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1,615 kB]
+#10 5.168 Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [70.9 kB]
+#10 5.171 Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [39.1 kB]
+#10 5.172 Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [114 kB]
+#10 5.575 Fetched 45.0 MB in 5s (8,540 kB/s)
+#10 5.575 Reading package lists...
+#10 6.514 Reading package lists...
+#10 7.390 Building dependency tree...
+#10 7.567 Reading state information...
+#10 7.761 The following additional packages will be installed:
+#10 7.761   libcurl4
+#10 7.803 The following NEW packages will be installed:
+#10 7.804   librdkafka++1 librdkafka1
+#10 7.804 The following packages will be upgraded:
+#10 7.805   curl libcurl4
+#10 8.526 2 upgraded, 2 newly installed, 0 to remove and 61 not upgraded.
+#10 8.526 Need to get 1,160 kB of archives.
+#10 8.526 After this operation, 2,017 kB of additional disk space will be used.
+#10 8.526 Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 curl amd64 7.81.0-1ubuntu1.23 [194 kB]
+#10 9.535 Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcurl4 amd64 7.81.0-1ubuntu1.23 [290 kB]
+#10 9.848 Get:3 http://archive.ubuntu.com/ubuntu jammy/universe amd64 librdkafka1 amd64 1.8.0-1build1 [633 kB]
+#10 ...
+
+#11 [builder 4/5] RUN apt-get update && apt-get install -y librdkafka-dev libjsoncpp-dev pkg-config
+#11 0.959 Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+#11 1.126 Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+#11 1.766 Get:3 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1,302 kB]
+#11 2.191 Get:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+#11 2.490 Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+#11 2.795 Get:6 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+#11 2.893 Get:7 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [3,786 kB]
+#11 3.015 Get:8 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+#11 3.405 Get:9 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [6,669 kB]
+#11 3.926 Get:10 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [62.6 kB]
+#11 5.139 Get:11 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+#11 5.142 Get:12 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1,792 kB]
+#11 5.219 Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4,120 kB]
+#11 5.492 Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [6,877 kB]
+#11 5.820 Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [70.9 kB]
+#11 6.500 Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1,615 kB]
+#11 8.332 Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [39.1 kB]
+#11 8.335 Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [114 kB]
+#11 8.365 Fetched 45.0 MB in 8s (5,603 kB/s)
+#11 8.365 Reading package lists...
+#11 9.243 Reading package lists...
+#11 10.07 Building dependency tree...
+#11 10.25 Reading state information...
+#11 ...
+
+#10 [runner 2/4] RUN apt-get update && apt-get install -y librdkafka1 librdkafka++1 curl && rm -rf /var/lib/apt/lists/*
+#10 10.18 Get:4 http://archive.ubuntu.com/ubuntu jammy/universe amd64 librdkafka++1 amd64 1.8.0-1build1 [42.0 kB]
+#10 10.33 debconf: delaying package configuration, since apt-utils is not installed
+#10 10.36 Fetched 1,160 kB in 2s (483 kB/s)
+#10 10.38 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 25471 files and directories currently installed.)
+#10 10.41 Preparing to unpack .../curl_7.81.0-1ubuntu1.23_amd64.deb ...
+#10 10.43 Unpacking curl (7.81.0-1ubuntu1.23) over (7.81.0-1ubuntu1.21) ...
+#10 10.52 Preparing to unpack .../libcurl4_7.81.0-1ubuntu1.23_amd64.deb ...
+#10 10.54 Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.23) over (7.81.0-1ubuntu1.21) ...
+#10 10.62 Selecting previously unselected package librdkafka1:amd64.
+#10 10.62 Preparing to unpack .../librdkafka1_1.8.0-1build1_amd64.deb ...
+#10 10.62 Unpacking librdkafka1:amd64 (1.8.0-1build1) ...
+#10 10.67 Selecting previously unselected package librdkafka++1:amd64.
+#10 10.67 Preparing to unpack .../librdkafka++1_1.8.0-1build1_amd64.deb ...
+#10 10.68 Unpacking librdkafka++1:amd64 (1.8.0-1build1) ...
+#10 10.72 Setting up librdkafka1:amd64 (1.8.0-1build1) ...
+#10 10.73 Setting up libcurl4:amd64 (7.81.0-1ubuntu1.23) ...
+#10 10.75 Setting up curl (7.81.0-1ubuntu1.23) ...
+#10 10.76 Setting up librdkafka++1:amd64 (1.8.0-1build1) ...
+#10 10.78 Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
+#10 DONE 10.9s
+
+#11 [builder 4/5] RUN apt-get update && apt-get install -y librdkafka-dev libjsoncpp-dev pkg-config
+#11 10.25 Reading state information...
+#11 10.52 libjsoncpp-dev is already the newest version (1.9.5-3).
+#11 10.52 pkg-config is already the newest version (0.29.2-1ubuntu3).
+#11 10.52 The following NEW packages will be installed:
+#11 10.53   librdkafka++1 librdkafka-dev librdkafka1
+#11 ...
+
+#12 [runner 3/4] WORKDIR /app
+#12 DONE 0.1s
+
+#11 [builder 4/5] RUN apt-get update && apt-get install -y librdkafka-dev libjsoncpp-dev pkg-config
+#11 11.02 0 upgraded, 3 newly installed, 0 to remove and 63 not upgraded.
+#11 11.02 Need to get 1,481 kB of archives.
+#11 11.02 After this operation, 6,303 kB of additional disk space will be used.
+#11 11.02 Get:1 http://archive.ubuntu.com/ubuntu jammy/universe amd64 librdkafka1 amd64 1.8.0-1build1 [633 kB]
+#11 12.78 Get:2 http://archive.ubuntu.com/ubuntu jammy/universe amd64 librdkafka++1 amd64 1.8.0-1build1 [42.0 kB]
+#11 12.79 Get:3 http://archive.ubuntu.com/ubuntu jammy/universe amd64 librdkafka-dev amd64 1.8.0-1build1 [805 kB]
+#11 13.26 debconf: delaying package configuration, since apt-utils is not installed
+#11 13.31 Fetched 1,481 kB in 3s (572 kB/s)
+#11 13.34 Selecting previously unselected package librdkafka1:amd64.
+#11 13.34 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 25471 files and directories currently installed.)
+#11 13.37 Preparing to unpack .../librdkafka1_1.8.0-1build1_amd64.deb ...
+#11 13.38 Unpacking librdkafka1:amd64 (1.8.0-1build1) ...
+#11 13.43 Selecting previously unselected package librdkafka++1:amd64.
+#11 13.43 Preparing to unpack .../librdkafka++1_1.8.0-1build1_amd64.deb ...
+#11 13.43 Unpacking librdkafka++1:amd64 (1.8.0-1build1) ...
+#11 13.47 Selecting previously unselected package librdkafka-dev:amd64.
+#11 13.47 Preparing to unpack .../librdkafka-dev_1.8.0-1build1_amd64.deb ...
+#11 13.48 Unpacking librdkafka-dev:amd64 (1.8.0-1build1) ...
+#11 13.54 Setting up librdkafka1:amd64 (1.8.0-1build1) ...
+#11 13.56 Setting up librdkafka++1:amd64 (1.8.0-1build1) ...
+#11 13.57 Setting up librdkafka-dev:amd64 (1.8.0-1build1) ...
+#11 13.59 Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
+#11 DONE 13.7s
+
+#13 [builder 5/5] RUN cmake -B /build/cmake-out -S /build -DCMAKE_BUILD_TYPE=Release     && cmake --build /build/cmake-out -j$(nproc)
+#13 0.471 -- The CXX compiler identification is GNU 11.4.0
+#13 0.479 -- Detecting CXX compiler ABI info
+#13 0.569 -- Detecting CXX compiler ABI info - done
+#13 0.574 -- Check for working CXX compiler: /usr/bin/g++-11 - skipped
+#13 0.574 -- Detecting CXX compile features
+#13 0.575 -- Detecting CXX compile features - done
+#13 0.576 -- Looking for C++ include any
+#13 0.661 -- Looking for C++ include any - found
+#13 0.661 -- Looking for C++ include string_view
+#13 0.774 -- Looking for C++ include string_view - found
+#13 0.775 -- Looking for C++ include coroutine
+#13 0.811 -- Looking for C++ include coroutine - not found
+#13 0.815 -- Found Jsoncpp: /usr/include/jsoncpp  
+#13 0.821 -- jsoncpp version:1.9.5
+#13 0.863 -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+#13 0.864 -- Found c-ares: /usr/include  
+#13 0.866 -- Looking for C++ include pthread.h
+#13 0.933 -- Looking for C++ include pthread.h - found
+#13 0.933 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+#13 1.001 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+#13 1.002 -- Found Threads: TRUE  
+#13 1.004 -- Found UUID: /usr/lib/x86_64-linux-gnu/libuuid.so
+#13 1.008 -- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.2.11") 
+#13 1.018 -- Found PostgreSQL: /usr/lib/x86_64-linux-gnu/libpq.so (found version "14.20")  
+#13 1.018 -- pg inc: /usr/include/postgresql
+#13 1.018 -- Found pg: /usr/lib/x86_64-linux-gnu/libpq.so  
+#13 1.020 -- Found SQLite3: /usr/lib/x86_64-linux-gnu/libsqlite3.so  
+#13 1.021 -- MySQL Include dir: /usr/include/mariadb
+#13 1.021 -- MySQL client libraries: /usr/lib/x86_64-linux-gnu/libmariadbclient.so
+#13 1.022 -- Found MySQL: /usr/lib/x86_64-linux-gnu/libmariadbclient.so  
+#13 1.027 -- mysql: OpenSSL found!
+#13 1.029 -- Found Hiredis: /usr/lib/x86_64-linux-gnu/libhiredis.so  
+#13 1.030 -- Looking for C++ include filesystem
+#13 1.353 -- Looking for C++ include filesystem - found
+#13 1.354 -- Performing Test CXX_FILESYSTEM_NO_LINK_NEEDED
+#13 1.793 -- Performing Test CXX_FILESYSTEM_NO_LINK_NEEDED - Success
+#13 1.798 -- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.2") 
+#13 1.799 -- Checking for module 'rdkafka++'
+#13 1.813 --   Found rdkafka++, version 1.8.0
+#13 1.848 -- Checking for module 'jsoncpp'
+#13 1.862 --   Found jsoncpp, version 1.9.5
+#13 1.893 -- Configuring done
+#13 1.899 -- Generating done
+#13 1.900 -- Build files have been written to: /build/cmake-out
+#13 1.943 [ 20%] Building CXX object CMakeFiles/pricing_solver.dir/src/KafkaConsumerService.cc.o
+#13 1.944 [ 60%] Building CXX object CMakeFiles/pricing_solver.dir/src/main.cc.o
+#13 1.944 [ 60%] Building CXX object CMakeFiles/pricing_solver.dir/src/PricingController.cc.o
+#13 1.946 [ 80%] Building CXX object CMakeFiles/pricing_solver.dir/src/PricingRulesController.cc.o
+#13 1.957 In file included from /build/src/main.cc:1:
+#13 1.957 /build/src/KafkaConsumerService.h:3:10: fatal error: cppkafka/cppkafka.h: No such file or directory
+#13 1.957     3 | #include <cppkafka/cppkafka.h>
+#13 1.957       |          ^~~~~~~~~~~~~~~~~~~~~
+#13 1.957 compilation terminated.
+#13 1.957 In file included from /build/src/KafkaConsumerService.cc:1:
+#13 1.957 /build/src/KafkaConsumerService.h:3:10: fatal error: cppkafka/cppkafka.h: No such file or directory
+#13 1.957     3 | #include <cppkafka/cppkafka.h>
+#13 1.957       |          ^~~~~~~~~~~~~~~~~~~~~
+#13 1.957 compilation terminated.
+#13 1.958 gmake[2]: *** [CMakeFiles/pricing_solver.dir/build.make:118: CMakeFiles/pricing_solver.dir/src/main.cc.o] Error 1
+#13 1.958 gmake[2]: *** Waiting for unfinished jobs....
+#13 1.959 gmake[2]: *** [CMakeFiles/pricing_solver.dir/build.make:76: CMakeFiles/pricing_solver.dir/src/KafkaConsumerService.cc.o] Error 1
+#13 2.806 In file included from /build/src/PricingController.h:2,
+#13 2.806                  from /build/src/PricingController.cc:1:
+#13 2.806 /build/src/PricingController.h: In static member function ???static void api::v1::PricingController::initPathRouting()???:
+#13 2.806 /build/src/PricingController.h:15:26: error: ???Post??? was not declared in this scope; did you mean ???drogon::Post????
+#13 2.806    15 |   PATH_ADD("/calculate", Post);
+#13 2.806       |                          ^~~~
+#13 2.806 In file included from /usr/local/include/drogon/utils/HttpConstraint.h:17,
+#13 2.806                  from /usr/local/include/drogon/HttpSimpleController.h:18,
+#13 2.806                  from /build/src/PricingController.h:2,
+#13 2.806                  from /build/src/PricingController.cc:1:
+#13 2.806 /usr/local/include/drogon/HttpTypes.h:192:5: note: ???drogon::Post??? declared here
+#13 2.806   192 |     Post,
+#13 2.806       |     ^~~~
+#13 2.807 In file included from /build/src/PricingController.h:2,
+#13 2.807                  from /build/src/PricingController.cc:1:
+#13 2.807 /build/src/PricingController.h:15:3: error: cannot convert ???<brace-enclosed initializer list>??? to ???const std::vector<drogon::internal::HttpConstraint>&???
+#13 2.807    15 |   PATH_ADD("/calculate", Post);
+#13 2.807       |   ^~~~~~~~
+#13 2.807 /usr/local/include/drogon/HttpSimpleController.h:79:54: note:   initializing argument 2 of ???static void drogon::HttpSimpleController<T, AutoCreation>::registerSelf__(const string&, const std::vector<drogon::internal::HttpConstraint>&) [with T = api::v1::PricingController; bool AutoCreation = true; std::string = std::__cxx11::basic_string<char>]???
+#13 2.807    79 |         const std::vector<internal::HttpConstraint> &constraints)
+#13 2.807       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+#13 2.807 /build/src/PricingController.h:16:23: error: ???Get??? was not declared in this scope; did you mean ???drogon::Get????
+#13 2.807    16 |   PATH_ADD("/health", Get);
+#13 2.807       |                       ^~~
+#13 2.807 In file included from /usr/local/include/drogon/utils/HttpConstraint.h:17,
+#13 2.807                  from /usr/local/include/drogon/HttpSimpleController.h:18,
+#13 2.807                  from /build/src/PricingController.h:2,
+#13 2.807                  from /build/src/PricingController.cc:1:
+#13 2.807 /usr/local/include/drogon/HttpTypes.h:191:5: note: ???drogon::Get??? declared here
+#13 2.807   191 |     Get = 0,
+#13 2.807       |     ^~~
+#13 2.807 In file included from /build/src/PricingController.h:2,
+#13 2.807                  from /build/src/PricingController.cc:1:
+#13 2.807 /build/src/PricingController.h:16:3: error: cannot convert ???<brace-enclosed initializer list>??? to ???const std::vector<drogon::internal::HttpConstraint>&???
+#13 2.807    16 |   PATH_ADD("/health", Get);
+#13 2.807       |   ^~~~~~~~
+#13 2.807 /usr/local/include/drogon/HttpSimpleController.h:79:54: note:   initializing argument 2 of ???static void drogon::HttpSimpleController<T, AutoCreation>::registerSelf__(const string&, const std::vector<drogon::internal::HttpConstraint>&) [with T = api::v1::PricingController; bool AutoCreation = true; std::string = std::__cxx11::basic_string<char>]???
+#13 2.807    79 |         const std::vector<internal::HttpConstraint> &constraints)
+#13 2.807       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+#13 2.818 /build/src/PricingRulesController.cc:14:13: error: ???req??? was not declared in this scope
+#13 2.818    14 | auto body = req->getJsonObject();
+#13 2.818       |             ^~~
+#13 2.818 /build/src/PricingRulesController.cc:15:1: error: expected unqualified-id before ???if???
+#13 2.818    15 | if (!body) {
+#13 2.818       | ^~
+#13 2.820 /build/src/PricingRulesController.cc:38:1: error: ???dbClient??? does not name a type
+#13 2.820    38 | dbClient->execSqlAsync(
+#13 2.820       | ^~~~~~~~
+#13 2.820 /build/src/PricingRulesController.cc:47:6: error: expected unqualified-id before ???,??? token
+#13 2.820    47 |     },
+#13 2.820       |      ^
+#13 2.820 /build/src/PricingRulesController.cc:48:5: error: expected unqualified-id before ???[??? token
+#13 2.820    48 |     [callback](const DrogonDbException &e) {
+#13 2.820       |     ^
+#13 2.820 /build/src/PricingRulesController.cc:53:6: error: expected unqualified-id before ???,??? token
+#13 2.820    53 |     },
+#13 2.820       |      ^
+#13 2.820 /build/src/PricingRulesController.cc:54:9: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    54 |     name, target_scope, target_id, conditions, action_logic, priority,
+#13 2.820       |         ^
+#13 2.820 /build/src/PricingRulesController.cc:54:23: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    54 |     name, target_scope, target_id, conditions, action_logic, priority,
+#13 2.820       |                       ^
+#13 2.820 /build/src/PricingRulesController.cc:54:34: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    54 |     name, target_scope, target_id, conditions, action_logic, priority,
+#13 2.820       |                                  ^
+#13 2.820 /build/src/PricingRulesController.cc:54:46: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    54 |     name, target_scope, target_id, conditions, action_logic, priority,
+#13 2.820       |                                              ^
+#13 2.820 /build/src/PricingRulesController.cc:54:60: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    54 |     name, target_scope, target_id, conditions, action_logic, priority,
+#13 2.820       |                                                            ^
+#13 2.820 /build/src/PricingRulesController.cc:54:70: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    54 |     name, target_scope, target_id, conditions, action_logic, priority,
+#13 2.820       |                                                                      ^
+#13 2.820 /build/src/PricingRulesController.cc:55:14: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    55 |     is_active, weight, multiplier, base_markup, id);
+#13 2.820       |              ^
+#13 2.820 /build/src/PricingRulesController.cc:55:22: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    55 |     is_active, weight, multiplier, base_markup, id);
+#13 2.820       |                      ^
+#13 2.820 /build/src/PricingRulesController.cc:55:34: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    55 |     is_active, weight, multiplier, base_markup, id);
+#13 2.820       |                                  ^
+#13 2.820 /build/src/PricingRulesController.cc:55:47: error: expected constructor, destructor, or type conversion before ???,??? token
+#13 2.820    55 |     is_active, weight, multiplier, base_markup, id);
+#13 2.820       |                                               ^
+#13 2.820 /build/src/PricingRulesController.cc:55:51: error: expected constructor, destructor, or type conversion before ???)??? token
+#13 2.820    55 |     is_active, weight, multiplier, base_markup, id);
+#13 2.820       |                                                   ^
+#13 2.820 /build/src/PricingRulesController.cc:58:6: error: ???PricingRulesController??? has not been declared
+#13 2.820    58 | void PricingRulesController::remove(
+#13 2.820       |      ^~~~~~~~~~~~~~~~~~~~~~
+#13 2.822 /build/src/PricingRulesController.cc:59:11: error: ???HttpRequestPtr??? does not name a type
+#13 2.822    59 |     const HttpRequestPtr &req,
+#13 2.822       |           ^~~~~~~~~~~~~~
+#13 2.823 /build/src/PricingRulesController.cc:60:30: error: ???HttpResponsePtr??? does not name a type
+#13 2.823    60 |     std::function<void(const HttpResponsePtr &)> &&callback, std::string id) {
+#13 2.823       |                              ^~~~~~~~~~~~~~~
+#13 2.823 /build/src/PricingRulesController.cc: In function ???void remove(const int&, std::function<void(const int&)>&&, std::string)???:
+#13 2.823 /build/src/PricingRulesController.cc:61:19: error: ???app??? was not declared in this scope; did you mean ???drogon::app????
+#13 2.823    61 |   auto dbClient = app().getDbClient();
+#13 2.823       |                   ^~~
+#13 2.823       |                   drogon::app
+#13 2.824 In file included from /usr/local/include/drogon/HttpSimpleController.h:19,
+#13 2.824                  from /build/src/PricingRulesController.h:2,
+#13 2.824                  from /build/src/PricingRulesController.cc:1:
+#13 2.824 /usr/local/include/drogon/HttpAppFramework.h:1656:26: note: ???drogon::app??? declared here
+#13 2.824  1656 | inline HttpAppFramework &app()
+#13 2.824       |                          ^~~
+#13 2.825 /build/src/PricingRulesController.cc:64:24: error: ???Result??? does not name a type
+#13 2.825    64 |       [callback](const Result &r) {
+#13 2.825       |                        ^~~~~~
+#13 2.825 /build/src/PricingRulesController.cc:69:7: error: expected identifier before ???[??? token
+#13 2.825    69 |       [callback](const DrogonDbException &e) {
+#13 2.825       |       ^
+#13 2.827 /build/src/PricingRulesController.cc:69:24: error: ???DrogonDbException??? does not name a type
+#13 2.827    69 |       [callback](const DrogonDbException &e) {
+#13 2.827       |                        ^~~~~~~~~~~~~~~~~
+#13 2.827 /build/src/PricingRulesController.cc:69:44: error: creating array of functions
+#13 2.827    69 |       [callback](const DrogonDbException &e) {
+#13 2.827       |                                            ^
+#13 2.827 /build/src/PricingRulesController.cc:69:45: error: expected ???)??? before ???{??? token
+#13 2.827    69 |       [callback](const DrogonDbException &e) {
+#13 2.827       |                                             ^~
+#13 2.827       |                                             )
+#13 2.827 /build/src/PricingRulesController.cc:64:17: note: to match this ???(???
+#13 2.827    64 |       [callback](const Result &r) {
+#13 2.827       |                 ^
+#13 2.827 /build/src/PricingRulesController.cc: In lambda function:
+#13 2.827 /build/src/PricingRulesController.cc:70:21: error: ???HttpResponse??? has not been declared
+#13 2.827    70 |         auto resp = HttpResponse::newHttpResponse();
+#13 2.827       |                     ^~~~~~~~~~~~
+#13 2.827 /build/src/PricingRulesController.cc:71:29: error: ???k500InternalServerError??? was not declared in this scope; did you mean ???drogon::k500InternalServerError????
+#13 2.827    71 |         resp->setStatusCode(k500InternalServerError);
+#13 2.827       |                             ^~~~~~~~~~~~~~~~~~~~~~~
+#13 2.827       |                             drogon::k500InternalServerError
+#13 2.828 In file included from /usr/local/include/drogon/utils/HttpConstraint.h:17,
+#13 2.828                  from /usr/local/include/drogon/HttpSimpleController.h:18,
+#13 2.828                  from /build/src/PricingRulesController.h:2,
+#13 2.828                  from /build/src/PricingRulesController.cc:1:
+#13 2.828 /usr/local/include/drogon/HttpTypes.h:79:5: note: ???drogon::k500InternalServerError??? declared here
+#13 2.828    79 |     k500InternalServerError = 500,
+#13 2.828       |     ^~~~~~~~~~~~~~~~~~~~~~~
+#13 2.828 /build/src/PricingRulesController.cc: At global scope:
+#13 2.828 /build/src/PricingRulesController.cc:77:1: error: expected declaration before ???}??? token
+#13 2.828    77 | } // namespace omnidynamic
+#13 2.828       | ^
+#13 2.828 /build/src/PricingRulesController.cc:79:25: error: expected constructor, destructor, or type conversion before ???(??? token
+#13 2.828    79 | REGISTER_HTTP_CONTROLLER(omnidynamic::PricingRulesController);
+#13 2.828       |                         ^
+#13 3.191 gmake[2]: *** [CMakeFiles/pricing_solver.dir/build.make:90: CMakeFiles/pricing_solver.dir/src/PricingController.cc.o] Error 1
+#13 3.199 gmake[2]: *** [CMakeFiles/pricing_solver.dir/build.make:104: CMakeFiles/pricing_solver.dir/src/PricingRulesController.cc.o] Error 1
+#13 3.199 gmake[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/pricing_solver.dir/all] Error 2
+#13 3.199 gmake: *** [Makefile:91: all] Error 2
+#13 ERROR: process "/bin/sh -c cmake -B /build/cmake-out -S /build -DCMAKE_BUILD_TYPE=Release     && cmake --build /build/cmake-out -j$(nproc)" did not complete successfully: exit code: 2
+------
+ > [builder 5/5] RUN cmake -B /build/cmake-out -S /build -DCMAKE_BUILD_TYPE=Release     && cmake --build /build/cmake-out -j$(nproc):
+2.828 /build/src/PricingRulesController.cc:77:1: error: expected declaration before ???}??? token
+2.828    77 | } // namespace omnidynamic
+2.828       | ^
+2.828 /build/src/PricingRulesController.cc:79:25: error: expected constructor, destructor, or type conversion before ???(??? token
+2.828    79 | REGISTER_HTTP_CONTROLLER(omnidynamic::PricingRulesController);
+2.828       |                         ^
+3.191 gmake[2]: *** [CMakeFiles/pricing_solver.dir/build.make:90: CMakeFiles/pricing_solver.dir/src/PricingController.cc.o] Error 1
+3.199 gmake[2]: *** [CMakeFiles/pricing_solver.dir/build.make:104: CMakeFiles/pricing_solver.dir/src/PricingRulesController.cc.o] Error 1
+3.199 gmake[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/pricing_solver.dir/all] Error 2
+3.199 gmake: *** [Makefile:91: all] Error 2
+------
+Dockerfile:5
+
+--------------------
+
+   4 |     RUN apt-get 
+update && apt-get 
+install -y 
+librdkafka-dev 
+libjsoncpp-dev 
+pkg-config
+
+   5 | >>> RUN cmake 
+-B /build/cmake-out -S 
+/build -DCMAKE_BUILD_TY
+PE=Release \
+
+   6 | >>>     && 
+cmake --build 
+/build/cmake-out 
+-j$(nproc)
+
+   7 |     
+
+--------------------
+
+failed to solve: 
+process "/bin/sh -c 
+cmake -B 
+/build/cmake-out -S 
+/build -DCMAKE_BUILD_TY
+PE=Release     && 
+cmake --build 
+/build/cmake-out 
+-j$(nproc)" did not 
+complete successfully: 
+exit code: 2
+
+

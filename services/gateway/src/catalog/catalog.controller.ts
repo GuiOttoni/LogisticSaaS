@@ -2,6 +2,8 @@ import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common'
 import { CatalogService } from './catalog.service';
 import { ApiTags } from '@nestjs/swagger';
 
+// TODO [SECURITY]: Add @UseGuards(JwtAuthGuard) before any public/production deployment.
+// POST/PUT/DELETE endpoints are currently UNPROTECTED — anyone can modify catalog data.
 @ApiTags('catalog')
 @Controller('catalog')
 export class CatalogController {

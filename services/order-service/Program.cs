@@ -1,6 +1,7 @@
 using Akka.Actor;
 using Microsoft.OpenApi.Models;
 using OmniDynamic.OrderService.Actors;
+using OmniDynamic.OrderService.Services;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
 
@@ -26,6 +27,24 @@ builder.Services.AddSingleton(_ => ActorSystem.Create("OmniDynamic",
             actor.provider = local
         }
     ")));
+
+// Supabase Client
+var supabaseUrl = builder.Configuration["SUPABASE_URL"];
+var supabaseKey = builder.Configuration["SUPABASE_SERVICE_ROLE_KEY"];
+
+if (string.IsNullOrEmpty(supabaseUrl) || string.IsNullOrEmpty(supabaseKey))
+{
+    Log.Fatal("Supabase configuration is missing. Ensure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.");
+    throw new InvalidOperationException("Supabase configuration is missing.");
+}
+
+builder.Services.AddSingleton(provider => new Supabase.Client(supabaseUrl, supabaseKey, new Supabase.SupabaseOptions { AutoRefreshToken = true }));
+
+// Kafka Producer (singleton — shared by worker and controller)
+builder.Services.AddSingleton<KafkaProducerService>();
+
+// Background Workers
+builder.Services.AddHostedService<OmniDynamic.OrderService.Workers.KafkaOrderWorker>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
