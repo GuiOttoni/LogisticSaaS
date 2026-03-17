@@ -6,13 +6,12 @@ using Supabase;
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .Enrich.FromLogContext()
     .Enrich.WithProperty("Application", "CatalogService")
+    .Enrich.WithProperty("container", "logisticsaas-catalog-service")
     .WriteTo.Console()
     .WriteTo.GrafanaLoki(
         "http://loki:3100",
-        propertiesAsLabels: new[] { "Application" })
+        propertiesAsLabels: new[] { "Application", "container" })
     .CreateLogger();
 
 builder.Host.UseSerilog();

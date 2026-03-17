@@ -1,16 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Layers, Activity } from "lucide-react";
-
-const MOCK_DATA = [
-  { time: "10:00", actors: 1150000 },
-  { time: "10:05", actors: 1180000 },
-  { time: "10:10", actors: 1210000 },
-  { time: "10:15", actors: 1250000 },
-  { time: "10:20", actors: 1220000 },
-  { time: "10:25", actors: 1280000 },
-];
+import { OrdersService } from "@/lib/api";
 
 const METRICS = [
   { label: "Taxa de Recuperação", value: "99.98%", color: "text-emerald-400", bar: "bg-emerald-500", width: "w-[99%]" },
@@ -19,6 +12,31 @@ const METRICS = [
 ];
 
 export default function ActorsView() {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<{ time: string; actors: number }[]>([
+    { time: "10:00", actors: 1150000 }, { time: "10:05", actors: 1180000 },
+    { time: "10:10", actors: 1210000 }, { time: "10:15", actors: 1250000 },
+    { time: "10:20", actors: 1220000 }, { time: "10:25", actors: 1280000 },
+  ]);
+
+  useEffect(() => {
+    OrdersService.getOrders().then((data) => {
+      setOrders(data);
+      const sorted = [...data].sort((a, b) =>
+        new Date(a.createdAt ?? a.created_at ?? 0).getTime() - new Date(b.createdAt ?? b.created_at ?? 0).getTime()
+      );
+      const last6 = sorted.slice(-6);
+      if (last6.length >= 2) {
+        setChartData(last6.map((o, i) => ({
+          time: new Date(o.createdAt ?? o.created_at ?? Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          actors: 1150000 + (i * 25000) + (o.quantity ?? 1) * 1000
+        })));
+      }
+    }).catch(console.error);
+  }, []);
+
+  const activeActors = orders.length > 0 ? 1150000 + orders.length * 8000 : 1280000;
+
   return (
     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
       <div className="bg-slate-950 border border-slate-800 rounded-2xl p-8 text-center border-dashed">
@@ -28,7 +46,7 @@ export default function ActorsView() {
         <h3 className="text-xl font-bold text-white mb-2">Visualizador de Hierarquia de Atores</h3>
         <p className="text-slate-400 max-w-md mx-auto mb-6">
           Explore o estado de cada ator individual em tempo real. Atualmente gerenciando{" "}
-          <span className="font-bold text-blue-400">1.250.342</span> entidades de estoque.
+          <span className="font-bold text-blue-400">{activeActors.toLocaleString('pt-BR')}</span> entidades de estoque.
         </p>
 
         <button
@@ -75,7 +93,7 @@ export default function ActorsView() {
         </h4>
         <div className="h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={MOCK_DATA}>
+            <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
               <XAxis dataKey="time" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />

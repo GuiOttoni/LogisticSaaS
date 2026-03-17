@@ -14,7 +14,10 @@ export const winstonLoggerFactory = WinstonModule.createLogger({
     }),
     new LokiTransport({
       host: 'http://loki:3100',
-      labels: { Application: 'Gateway' },
+      labels: { 
+        Application: 'Gateway',
+        container: 'logisticsaas-gateway'
+      },
       json: true,
       format: winston.format.json(),
       replaceTimestamp: true,

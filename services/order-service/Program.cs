@@ -11,10 +11,11 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .Enrich.FromLogContext()
     .Enrich.WithProperty("Application", "OrderService")
+    .Enrich.WithProperty("container", "logisticsaas-order-service")
     .WriteTo.Console()
     .WriteTo.GrafanaLoki(
         "http://loki:3100",
-        propertiesAsLabels: new[] { "Application" })
+        propertiesAsLabels: new[] { "Application", "container" })
     .CreateLogger();
 
 builder.Host.UseSerilog();

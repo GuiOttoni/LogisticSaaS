@@ -8,6 +8,7 @@ import InventoryView from "@/components/views/InventoryView";
 import ActorsView from "@/components/views/ActorsView";
 import TestLabView from "@/components/views/TestLabView";
 import { Activity, Settings, Package, Cpu, RefreshCcw, ShieldAlert, Beaker } from "lucide-react";
+import { PricingService } from "@/lib/api";
 
 const VIEWS: Record<string, { label: string; subtitle: string }> = {
   overview: { label: "Painel de Inteligência", subtitle: "Processando telemetria em tempo real" },
@@ -28,6 +29,21 @@ const NAV_ITEMS = [
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [latency, setLatency] = useState(12.4);
+  const [emergencyStopping, setEmergencyStopping] = useState(false);
+
+  const handleEmergencyStop = async () => {
+    if (!confirm("⚠️ EMERGENCY STOP: Desativar TODAS as regras de precificação dinâmica?\nO sistema usará apenas preços base até reativação manual.")) return;
+    setEmergencyStopping(true);
+    try {
+      const rules = await PricingService.getRules();
+      await Promise.all(rules.map((r: any) => PricingService.updateRule(r.id, { ...r, is_active: false })));
+      alert(`✅ ${rules.length} regra(s) desativada(s). Solver usando preços base.`);
+    } catch (e) {
+      alert("Erro ao executar Emergency Stop. Verifique os logs.");
+    } finally {
+      setEmergencyStopping(false);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,8 +85,13 @@ export default function DashboardPage() {
             >
               <RefreshCcw className="w-5 h-5" />
             </button>
-            <button className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-lg shadow-rose-900/20">
-              <ShieldAlert className="w-4 h-4" /> EMERGENCY STOP
+            <button
+              onClick={handleEmergencyStop}
+              disabled={emergencyStopping}
+              className="bg-rose-600 hover:bg-rose-700 disabled:opacity-60 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-lg shadow-rose-900/20"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              {emergencyStopping ? "Parando..." : "EMERGENCY STOP"}
             </button>
           </div>
         </header>

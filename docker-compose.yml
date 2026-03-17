@@ -3,15 +3,20 @@ services:
   # FRONTEND - Next.js 14 (on local; production goes to Vercel)
   # ===================================================================
   frontend:
+    container_name: logisticsaas-frontend
     build:
       context: ./services/frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_GATEWAY_URL=http://localhost:3001
+    labels:
+      service_name: "frontend"
     ports:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - NEXT_PUBLIC_GATEWAY_URL=http://gateway:3001
+      - NEXT_PUBLIC_GATEWAY_URL=http://localhost:3001
     depends_on:
       - gateway
       - promtail
@@ -22,9 +27,12 @@ services:
   # API GATEWAY / BFF - NestJS
   # ===================================================================
   gateway:
+    container_name: logisticsaas-gateway
     build:
       context: ./services/gateway
       dockerfile: Dockerfile
+    labels:
+      service_name: "gateway"
     ports:
       - "3001:3001"
     environment:
@@ -54,9 +62,12 @@ services:
   # INGESTION LAYER - Java 21 / Spring WebFlux
   # ===================================================================
   ingestion:
+    container_name: logisticsaas-ingestion
     build:
       context: ./services/ingestion
       dockerfile: Dockerfile
+    labels:
+      service_name: "ingestion"
     ports:
       - "3002:3002"
     environment:
@@ -77,9 +88,12 @@ services:
   # PRICING SOLVER - C++ 20 / Drogon + gRPC
   # ===================================================================
   pricing-solver:
+    container_name: logisticsaas-pricing-solver
     build:
       context: ./services/pricing-solver
       dockerfile: Dockerfile
+    labels:
+      service_name: "pricing-solver"
     ports:
       - "3003:3003" # HTTP debug
       - "50060:50051" # gRPC
@@ -113,9 +127,12 @@ services:
   # ORDER SERVICE - .NET 8 / Akka.NET
   # ===================================================================
   order-service:
+    container_name: logisticsaas-order-service
     build:
       context: ./services/order-service
       dockerfile: Dockerfile
+    labels:
+      service_name: "order-service"
     ports:
       - "3004:3004"
     environment:
@@ -124,6 +141,8 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_TOPIC_INVENTORY=inventory-events
+      - KAFKA_TOPIC_ORDERS=order-events
     depends_on:
       promtail:
         condition: service_started
@@ -143,9 +162,12 @@ services:
   # CATALOG SERVICE - .NET 8 / Minimal API
   # ===================================================================
   catalog-service:
+    container_name: logisticsaas-catalog-service
     build:
       context: ./services/catalog-service
       dockerfile: Dockerfile
+    labels:
+      service_name: "catalog-service"
     ports:
       - "3005:3005"
     environment:
@@ -167,7 +189,10 @@ services:
   # INFRASTRUCTURE
   # ===================================================================
   kafka:
+    container_name: logisticsaas-kafka
     image: confluentinc/cp-kafka:7.6.0
+    labels:
+      service_name: "kafka"
     ports:
       - "9092:9092"
     environment:
@@ -198,14 +223,20 @@ services:
       - omnidynamic
 
   zookeeper:
+    container_name: logisticsaas-zookeeper
     image: confluentinc/cp-zookeeper:7.6.0
+    labels:
+      service_name: "zookeeper"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     networks:
       - omnidynamic
 
   redis:
+    container_name: logisticsaas-redis
     image: redis:7.2-alpine
+    labels:
+      service_name: "redis"
     ports:
       - "6379:6379"
     command: redis-server --save 60 1 --loglevel warning
@@ -213,7 +244,10 @@ services:
       - omnidynamic
 
   kafka-ui:
+    container_name: logisticsaas-kafka-ui
     image: provectuslabs/kafka-ui:v0.7.2
+    labels:
+      service_name: "kafka-ui"
     ports:
       - "8081:8080"
     environment:
@@ -225,7 +259,10 @@ services:
       - omnidynamic
 
   kafka-init:
+    container_name: logisticsaas-kafka-init
     image: confluentinc/cp-kafka:7.6.0
+    labels:
+      service_name: "kafka-init"
     depends_on:
       kafka:
         condition: service_healthy
@@ -243,7 +280,10 @@ services:
   # OBSERVABILITY
   # ===================================================================
   loki:
+    container_name: logisticsaas-loki
     image: grafana/loki:3.1.0
+    labels:
+      service_name: "loki"
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -251,7 +291,10 @@ services:
       - omnidynamic
 
   promtail:
+    container_name: logisticsaas-promtail
     image: grafana/promtail:3.1.0
+    labels:
+      service_name: "promtail"
     volumes:
       - ./infra/monitoring/promtail/config.yml:/etc/promtail/config.yml
       # Mount docker socket for reading container logs if we decide to
@@ -266,7 +309,10 @@ services:
       - omnidynamic
 
   prometheus:
+    container_name: logisticsaas-prometheus
     image: prom/prometheus:v2.53.0
+    labels:
+      service_name: "prometheus"
     volumes:
       - ./infra/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -289,7 +335,10 @@ services:
       - omnidynamic
 
   grafana:
+    container_name: logisticsaas-grafana
     image: grafana/grafana:11.1.0
+    labels:
+      service_name: "grafana"
     environment:
       # SECURITY: anonymous access disabled — use admin/admin on first login and change immediately
       - GF_SECURITY_ADMIN_USER=${GF_ADMIN_USER:-admin}

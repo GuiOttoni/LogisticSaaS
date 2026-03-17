@@ -5,7 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('ingestion')
 @Controller('telemetry')
 export class IngestionController {
-  private readonly baseUrl = 'http://ingestion-service:3002/telemetry';
+  private readonly baseUrl = 'http://ingestion:3002/telemetry';
 
   @Post()
   async proxyTelemetry(@Body() payload: any) {

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -rn \"TODO\\\\|FIXME\\\\|SECURITY\\\\|disabled\\\\|unprotected\" /f/Projetos/LogisticSaaS/services --include=*.ts --include=*.cs)",
+      "Bash(find /f/Projetos/LogisticSaaS/services/gateway/src -name *.ts -type f)"
+    ]
+  }
+}

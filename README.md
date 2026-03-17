@@ -126,4 +126,19 @@ Infra     → Terraform (ver infra/terraform/)
 
 ---
 
+---
+
+## Próximos Passos / Roadmap
+
+| # | Tarefa | Impacto | Complexidade |
+| --- | ------ | ------- | ------------ |
+| 1 | **Redis cache no Pricing Solver** — integrar `hiredis` no CMakeLists.txt; cachear resultados de `/calculate` por SKU + regras ativas | Reduz latência P99 | Alta |
+| 2 | **RF02 — Backtesting / Sandboxing de regras** — endpoint de simulação que aplica regras sem persistir; UI no Test Lab para comparar cenários | Nova feature | Alta |
+| 3 | **RF07 — Auditoria imutável de mudanças de preço** — tabela `price_audit` append-only; logar cada cálculo com regras aplicadas, `base_price`, `final_price`, timestamp | Compliance | Média |
+| 4 | **gRPC real Gateway ↔ Pricing Solver** — substituir REST HTTP por gRPC (proto já planejado); reduzir overhead de serialização | Performance | Alta |
+| 5 | **Circuit Breakers** — Polly no Order Service (.NET); Resilience4j no Ingestion (Java); fallback para preço base quando Solver indisponível | Resiliência | Média |
+| 6 | **Akka.Persistence no Order Service** — persistir estado dos atores no PostgreSQL via `Akka.Persistence.PostgreSql`; sobreviver a restarts | Estado persistente | Média |
+| 7 | **RF10 — RBAC** — reativar `@UseGuards(JwtAuthGuard)` nos controllers; implementar roles `admin` / `operator` / `viewer`; proteger endpoints de escrita | Segurança produção | Média |
+| 8 | **RF08 complementar — "Reativar tudo"** — botão de reversão do Emergency Stop; reativar todas as regras com um clique após freeze | UX | Baixa |
+
 > Documentação completa: [`arquitetura-togaf.md`](./arquitetura-togaf.md)

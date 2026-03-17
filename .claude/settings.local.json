@@ -25,7 +25,19 @@
       "Bash(find /f/Projetos/LogisticSaaS -name *.yml -o -name *.yaml)",
       "Bash(grep -r \"latest\" /f/Projetos/LogisticSaaS/services/*/Dockerfile /f/Projetos/LogisticSaaS/docker-compose.yml)",
       "Bash(grep -r \"RUN.*as root\\\\|root:\" /f/Projetos/LogisticSaaS/services/*/Dockerfile)",
-      "Bash(grep -oE '[A-Z_]{3,}=\\\\$\\\\{[A-Z_]+\\\\}' docker-compose.yml)"
+      "Bash(grep -oE '[A-Z_]{3,}=\\\\$\\\\{[A-Z_]+\\\\}' docker-compose.yml)",
+      "Bash(gemini -p \"Pesquise no Docker Hub quais são as tags disponíveis da imagem drogonframework/drogon. Preciso de uma tag estável e existente para usar no Dockerfile. Responda apenas com a tag recomendada \\(ex: v1.9.5 ou latest-stable\\).\")",
+      "Bash(find f:ProjetosLogisticSaaSservicesgatewaysrc -name *.guard.ts)",
+      "Bash(find /f/Projetos/LogisticSaaS -maxdepth 1 -name .env* -o -name config.template*)",
+      "Bash(grep -r \"ORDER_SERVICE_URL\\\\|CATALOG_SERVICE_URL\\\\|PRICING_SOLVER\" /f/Projetos/LogisticSaaS/services/gateway/src --include=*.ts)",
+      "Bash(grep -r \"3004\\\\|3005\\\\|3003\\\\|50051\" /f/Projetos/LogisticSaaS/services/gateway --include=*.ts)",
+      "Bash(grep -r \"KAFKA_TOPIC_ORDERS\\\\|order-events\" /f/Projetos/LogisticSaaS --include=*.ts --include=*.cs --include=*.cc)",
+      "Bash(find /f/Projetos/LogisticSaaS/services/catalog-service -name *.cs)",
+      "Bash(grep -r \"api/products\\\\|/api\" /f/Projetos/LogisticSaaS/services/catalog-service --include=*.cs)",
+      "Bash(ls -la /f/Projetos/LogisticSaaS/services/order-service/*.cs)",
+      "Bash(grep -r \"ReservationCreated\\\\|ReservationActor\" /f/Projetos/LogisticSaaS/services/order-service --include=*.cs)",
+      "Bash(find /f/Projetos/LogisticSaaS/services/ingestion/src -name *.java)",
+      "Bash(grep -r \"telemetry\\\\|/telemetry\" /f/Projetos/LogisticSaaS/services/ingestion --include=*.java)"
     ]
   }
 }

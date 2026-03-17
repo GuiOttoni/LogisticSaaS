@@ -66,7 +66,7 @@ void PricingController::calculate(
         Json::Value ret;
         ret["sku"]             = sku;
         ret["base_price"]      = basePrice;
-        ret["calculatedPrice"] = finalPrice;
+        ret["calculated_price"] = finalPrice;
         ret["rule"]            = appliedRule;
         ret["ruleId"]          = ruleId;
 

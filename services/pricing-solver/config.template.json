@@ -11,7 +11,7 @@
             "name": "default",
             "rdbms": "postgresql",
             "host": "${DB_HOST}",
-            "port": ${DB_PORT},
+            "port": ${DB_PORT:-6543},
             "dbname": "${DB_NAME}",
             "user": "${DB_USER}",
             "passwd": "${DB_PASSWORD}",

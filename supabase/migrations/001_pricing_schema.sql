@@ -15,10 +15,14 @@ CREATE TABLE IF NOT EXISTS pricing.pricing_rules (
     conditions   JSONB        NOT NULL DEFAULT '{}',
     -- JSONB action_logic: e.g. {"type": "markup", "value": 0.20}
     action_logic JSONB        NOT NULL DEFAULT '{}',
-    priority     INTEGER      NOT NULL DEFAULT 0,
-    is_active    BOOLEAN      NOT NULL DEFAULT TRUE,
-    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+    priority     INTEGER          NOT NULL DEFAULT 0,
+    is_active    BOOLEAN          NOT NULL DEFAULT TRUE,
+    -- Solver formula: finalPrice = (basePrice*(1-weight)) + ((basePrice+base_markup)*multiplier*weight)
+    weight       DOUBLE PRECISION NOT NULL DEFAULT 1.0 CHECK (weight >= 0.0 AND weight <= 1.0),
+    multiplier   DOUBLE PRECISION NOT NULL DEFAULT 1.0,
+    base_markup  DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    created_at   TIMESTAMPTZ      NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMPTZ      NOT NULL DEFAULT NOW()
 );
 
 -- Index for fast active-rule lookups by scope and target

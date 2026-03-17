@@ -6,7 +6,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('pricing')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// TODO [SECURITY]: Re-enable @UseGuards(JwtAuthGuard) before any public/production deployment.
+// @UseGuards(JwtAuthGuard) // Temporarily disabled for local dev — pricing endpoints are UNPROTECTED
 @Controller('pricing-rules')
 export class PricingController {
   constructor(private readonly pricingService: PricingService) {}

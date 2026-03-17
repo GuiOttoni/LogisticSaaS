@@ -92,11 +92,14 @@ export default function RulesView() {
             setEditingRule({
               name: "",
               target_scope: "GLOBAL",
+              target_id: "",
               multiplier: 1.0,
               base_markup: 0.0,
               weight: 1.0,
               priority: 0,
-              is_active: true
+              is_active: true,
+              conditions: {},
+              action_logic: {}
             });
             setShowForm(true);
           }}
@@ -215,20 +218,22 @@ export default function RulesView() {
                </div>
 
                <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Peso da Regra (Importância)</label>
+                <label className="block text-sm font-medium text-slate-400 mb-1">
+                  Peso da Regra — blend factor C++ <code className="text-blue-400 text-xs">(0–1)</code>
+                </label>
                 <input
                   type="range"
-                  min="0.1"
-                  max="5.0"
-                  step="0.1"
+                  min="0.0"
+                  max="1.0"
+                  step="0.05"
                   value={editingRule.weight}
                   onChange={e => setEditingRule({...editingRule, weight: parseFloat(e.target.value)})}
                   className="w-full accent-blue-600"
                 />
                 <div className="flex justify-between text-xs text-slate-500">
-                    <span>Suave</span>
-                    <span className="text-blue-400 font-bold">{editingRule.weight}x</span>
-                    <span>Agressivo</span>
+                    <span>Base (0)</span>
+                    <span className="text-blue-400 font-bold">{editingRule.weight?.toFixed(2)}</span>
+                    <span>Regra Total (1)</span>
                 </div>
               </div>
 

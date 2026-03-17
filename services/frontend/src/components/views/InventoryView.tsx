@@ -15,7 +15,13 @@ const INVENTORY_DISTRIBUTION = [
 
 export default function InventoryView() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  const filteredProducts = products.filter(p =>
+    p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({ sku: '', name: '', basePrice: 0, stockQuantity: 0 });
@@ -94,6 +100,8 @@ export default function InventoryView() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <input
               id="inventory-search"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
               placeholder="Pesquisar SKU ou nome..."
               className="w-full bg-slate-900 border border-slate-800 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-blue-500 text-slate-200"
             />
@@ -194,7 +202,7 @@ export default function InventoryView() {
         <div className="p-6 border-b border-slate-800 flex justify-between items-center">
             <h4 className="font-bold text-lg text-white">Catálogo de Produtos</h4>
             <span className="bg-blue-500/10 text-blue-400 text-xs font-medium px-2.5 py-1 rounded-full border border-blue-500/20">
-                {products.length} itens
+                {filteredProducts.length}{searchTerm ? ` de ${products.length}` : ""} itens
             </span>
         </div>
         <div className="overflow-x-auto">
@@ -218,14 +226,14 @@ export default function InventoryView() {
                     </div>
                   </td>
                 </tr>
-              ) : products.length === 0 ? (
+              ) : filteredProducts.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                    Nenhum produto cadastrado no catálogo.
+                    {searchTerm ? `Nenhum produto encontrado para "${searchTerm}".` : "Nenhum produto cadastrado no catálogo."}
                   </td>
                 </tr>
               ) : (
-                products.map((product) => (
+                filteredProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-slate-900/50 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col">

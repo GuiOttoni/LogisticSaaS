@@ -25,7 +25,8 @@ export default function TestLabPage() {
 
   useEffect(() => {
     // Basic SSE implementation to listen to our NestJS Kafka forwarder
-    const eventSource = new EventSource("http://localhost:3001/stream/kafka");
+    const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3001';
+    const eventSource = new EventSource(`${GATEWAY_URL}/stream/kafka`);
     
     eventSource.onmessage = (event) => {
       try {

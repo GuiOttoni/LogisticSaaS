@@ -30,10 +30,11 @@ export default function OverviewView({ latency }: OverviewViewProps) {
       setOrders(oData);
       
       // Transform orders into chart data (simplified grouping by time)
-      const sortedOrders = [...oData].sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      // .NET Order Service serializes PascalCase → camelCase: totalPrice, createdAt, sku
+      const sortedOrders = [...oData].sort((a,b) => new Date(a.createdAt ?? a.created_at).getTime() - new Date(b.createdAt ?? b.created_at).getTime());
       const last6 = sortedOrders.slice(-6).map(o => ({
-          time: new Date(o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          price: o.total_price,
+          time: new Date(o.createdAt ?? o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          price: o.totalPrice ?? o.total_price ?? 0,
           inventory: pData.find(p => p.sku === o.sku)?.stockQuantity || 0
       }));
       
@@ -60,7 +61,7 @@ export default function OverviewView({ latency }: OverviewViewProps) {
     return () => clearInterval(i);
   }, []);
 
-  const totalSales = orders.reduce((acc, o) => acc + o.total_price, 0);
+  const totalSales = orders.reduce((acc, o) => acc + (o.totalPrice ?? o.total_price ?? 0), 0);
   const stockLevel = products.reduce((acc, p) => acc + p.stockQuantity, 0);
 
   return (
